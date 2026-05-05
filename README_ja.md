@@ -148,7 +148,7 @@ momorph init . --ai cursor
 
 > **注意:** `momorph init` 実行中に `failed to install extension` エラーが表示されても init 自体が成功している場合は、`resources/` ディレクトリに含まれる VSIX ファイルを使用して拡張機能を手動でインストールしてください:
 > ```sh
-> code --install-extension resources/vscode-momorph-0.12.4.vsix
+> code --install-extension resources/vscode-momorph-0.13.0.vsix
 > ```
 > または、こちらの詳細ガイドを参照してください: https://sun-asterisk.enterprise.slack.com/docs/T02CQGZA7MK/F094K2LTV71?focus_section_id=temp:C:USe2e5a076e79fd458c9b713260c
 

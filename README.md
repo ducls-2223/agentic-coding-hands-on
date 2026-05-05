@@ -148,7 +148,7 @@ Lệnh này sẽ:
 
 > **Lưu ý:** Nếu trong quá trình `momorph init` bạn gặp lỗi `failed to install extension` nhưng init vẫn hoàn tất, hãy cài extension thủ công bằng file VSIX có sẵn trong thư mục `resources/`:
 > ```sh
-> code --install-extension resources/vscode-momorph-0.12.4.vsix
+> code --install-extension resources/vscode-momorph-0.13.0.vsix
 > ```
 > Hoặc tham khảo hướng dẫn chi tiết tại đây: https://sun-asterisk.enterprise.slack.com/docs/T02CQGZA7MK/F094K2LTV71?focus_section_id=temp:C:USe2e5a076e79fd458c9b713260c
 

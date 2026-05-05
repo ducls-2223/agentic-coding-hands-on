@@ -148,7 +148,7 @@ This command will:
 
 > **Note:** If you encounter the `failed to install extension` error during `momorph init` but the init process still succeeds, install the extension manually using the VSIX file included in the `resources/` directory:
 > ```sh
-> code --install-extension resources/vscode-momorph-0.12.4.vsix
+> code --install-extension resources/vscode-momorph-0.13.0.vsix
 > ```
 > Or refer to the detailed guide here: https://sun-asterisk.enterprise.slack.com/docs/T02CQGZA7MK/F094K2LTV71?focus_section_id=temp:C:USe2e5a076e79fd458c9b713260c
 
