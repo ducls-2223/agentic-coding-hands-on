@@ -6,8 +6,13 @@
 # misc
 .DS_Store
 *.pem
-/.claude/worktrees/
-/.claude/mind.*
+
+# AI agents files
+.claude/*
+!.claude/settings.json
+.mind.*
+mind.*
+plans/**/*
 
 # debug
 npm-debug.log*
