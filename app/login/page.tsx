@@ -1,3 +1,4 @@
+import Image from "next/image";
 import LoginHeader from "./_components/login-header";
 import GoogleLoginButton from "./_components/google-login-button";
 import LoginErrorBanner from "./_components/login-error-banner";
@@ -14,11 +15,13 @@ interface LoginPageProps {
  * Design ref: MoMorph "Login" frame
  *   fileKey: 9ypp4enmFmdK3YAFJLIu6C | screenId: GzbNeVGJHz
  *
- * Background note: MoMorph node 662:14389 is a RECTANGLE with an embedded
- * image fill. Its asset URL is NOT exposed via the media-files API, so the
- * decorative background is rendered as a CSS gradient stand-in. The header
- * and hero PNGs (logo, ROOT FURTHER) are real MoMorph exports under
- * public/login/.
+ * Layout (from design node 662:14393 mms_B_Bìa):
+ *   - Full-viewport bg: bg-keyvisual.png (1440×1024), artwork visible on right half.
+ *   - Dark gradient mask (from-[#0A0E1B]/95 left → transparent right) hides baked-in
+ *     hero content in the PNG and provides clean dark surface for overlay components.
+ *   - Hero content (ROOT FURTHER + welcome text + button) is left-aligned,
+ *     vertically centered, mirroring design x=144 padding (10vw on desktop).
+ *   - Design frame padding: 96px top/bottom, 144px left/right (10% of 1440px).
  */
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
@@ -31,24 +34,45 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       <LoginHeader />
 
       {/* ── Background layer (absolute, z-0) ── */}
-      {/* Stand-in for mms_C_Keyvisual > image 1 (662:14389). The image fill
-          on that RECTANGLE is not exported by MoMorph's media-files API. */}
+      {/* Full-frame Figma render: bg-keyvisual.png.
+          Gradient mask: solid dark on left (hides baked-in hero text in PNG),
+          fades to transparent on right (preserves artwork). */}
       <div className="absolute inset-0 z-0" aria-hidden="true">
-        <div className="absolute inset-0 bg-linear-to-br from-slate-900 via-emerald-950 to-slate-800" />
-        {/* Dark overlay mirrors Rectangle 57 + Cover nodes for text legibility */}
-        <div className="absolute inset-0 bg-black/40" />
+        <Image
+          src="/login/bg-keyvisual.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-right"
+        />
+        {/* DO NOT REMOVE — masks the baked-in Figma UI (ROOT FURTHER text + button
+            + footer) inside bg-keyvisual.png. Without this gradient those elements
+            ghost through behind the overlay components on the left half of the
+            viewport. */}
+        <div className="absolute inset-0 bg-linear-to-r from-[#0A0E1B]/95 from-30% via-[#0A0E1B]/60 via-55% to-transparent to-75%" />
       </div>
 
-      {/* ── Main content (z-10, full-height centered) ── */}
-      <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-24">
-        <div className="flex w-full max-w-sm flex-col items-center gap-8 text-center md:max-w-md">
+      {/* ── Main content (z-10, full-height, left-aligned) ── */}
+      {/* Design: mms_B_Bìa padding 96px 144px, hero vertically centered.
+          On mobile: centered layout for narrower viewports. */}
+      <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 md:items-start md:px-[10vw] lg:px-36">
+        <div className="flex w-full max-w-sm flex-col items-center gap-6 text-center md:max-w-none md:items-start md:text-left">
 
-          {/* ROOT FURTHER key visual — mms_B.1_Key Visual (2939:9548) */}
+          {/* ROOT FURTHER key visual — mms_B.1_Key Visual (2939:9548).
+              Design container: 1152px wide. Scale generously on desktop. */}
           <RootFurtherWordmark />
 
-          {/* Vietnamese welcome text */}
-          {/* Design node: mms_B.2_content (662:14753) */}
-          <p className="text-base font-medium leading-relaxed text-white/90 md:text-lg">
+          {/* Welcome text — mms_B.2_content (662:14753).
+              Design: Montserrat Bold 20px, white, left-aligned, 40px line-height. */}
+          <p
+            className="font-montserrat font-bold text-white md:text-left"
+            style={{
+              fontSize: "20px",
+              lineHeight: "40px",
+              letterSpacing: "0.5px",
+            }}
+          >
             Bắt đầu hành trình của bạn cùng SAA 2025.
             <br />
             Đăng nhập để khám phá!
@@ -57,14 +81,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           {/* Error banner — rendered when ?error=<code> is present in URL */}
           {errorCode && <LoginErrorBanner errorCode={errorCode} />}
 
-          {/* Google login button */}
-          {/* Design node: mms_B.3_Login (662:14425) */}
+          {/* Google login button — mms_B.3_Login (662:14425).
+              Button-IC About (662:14426): cream/yellow bg, dark navy text, Google G icon right. */}
           <GoogleLoginButton action={loginWithGoogle} />
         </div>
       </main>
 
       {/* ── Footer (absolute bottom, z-10) ── */}
-      {/* Design node: mms_D_Footer > "Bản quyền thuộc về Sun* © 2025" (I662:14447;342:1413) */}
+      {/* Design node: mms_D_Footer > "Bản quyền thuộc về Sun* © 2025" */}
       <footer className="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center pb-6">
         <p className="text-xs text-white/50">
           Bản quyền thuộc về Sun* © 2025
