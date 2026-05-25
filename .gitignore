@@ -46,24 +46,3 @@ next-env.d.ts
 !.dev.vars.example
 yarn.lock
 package-lock.json
-
-# --- Android ---
-.gradle/
-**/build/
-local.properties
-*.apk
-*.aab
-*.jks
-*.keystore
-
-# --- iOS ---
-Pods/
-DerivedData/
-*.ipa
-*.xcuserdata
-*.xcworkspace/xcuserdata/
-
-# --- React Native ---
-ios/Pods/
-android/.gradle/
-android/build/
