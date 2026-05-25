@@ -2,32 +2,11 @@
 
 # dependencies
 /node_modules
-<<<<<<< HEAD
-=======
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
->>>>>>> e81dfa6 (Initial app)
 
 # misc
 .DS_Store
 *.pem
 
-<<<<<<< HEAD
 # AI agents files
 .claude/*
 !.claude/settings.json
@@ -35,14 +14,11 @@
 mind.*
 plans/**/*
 
-=======
->>>>>>> e81dfa6 (Initial app)
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-<<<<<<< HEAD
 *.log
 
 # env files (can opt-in for committing if needed)
@@ -70,36 +46,3 @@ next-env.d.ts
 !.dev.vars.example
 yarn.lock
 package-lock.json
-
-# --- Android ---
-.gradle/
-**/build/
-local.properties
-*.apk
-*.aab
-*.jks
-*.keystore
-
-# --- iOS ---
-Pods/
-DerivedData/
-*.ipa
-*.xcuserdata
-*.xcworkspace/xcuserdata/
-
-# --- React Native ---
-ios/Pods/
-android/.gradle/
-android/build/
-=======
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
->>>>>>> e81dfa6 (Initial app)
