@@ -1,15 +1,40 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { createKudos } from "../_actions/create-kudos";
 import { KudosWriteDialog } from "./kudos-write-dialog";
 
 export function KudosInputBar() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
+
+  const showToast = useCallback((message: string) => {
+    setToast(message);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setToast(null), 2500);
+  }, []);
+
+  // Stable reference — the dialog's useEffect depends on this, so any
+  // re-creation each render would re-fire the success effect.
+  const handleSuccess = useCallback(() => {
+    setDialogOpen(false);
+    showToast("Kudos đã được gửi!");
+  }, [showToast]);
+
+  const handleClose = useCallback(() => setDialogOpen(false), []);
 
   return (
     <>
-      <div className="flex w-full items-center gap-6">
+      <div className="relative flex w-full items-center gap-6">
         <button
           type="button"
           onClick={() => setDialogOpen(true)}
@@ -44,10 +69,24 @@ export function KudosInputBar() {
             Tìm kiếm profile Sunner
           </span>
         </div>
+
+        {toast && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="font-montserrat absolute -top-12 left-0 rounded-lg bg-[#FFEA9E] px-4 py-2 text-sm font-bold text-[#00101A] shadow-lg"
+          >
+            {toast}
+          </div>
+        )}
       </div>
 
       {dialogOpen && (
-        <KudosWriteDialog onClose={() => setDialogOpen(false)} />
+        <KudosWriteDialog
+          action={createKudos}
+          onSuccess={handleSuccess}
+          onClose={handleClose}
+        />
       )}
     </>
   );
