@@ -1,20 +1,43 @@
-import Link from "next/link";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { HomeHeader } from "@/app/_components/home-header";
+import { HomeFooter } from "@/app/_components/home-footer";
+import { KudosKeyvisual } from "./_components/kudos-keyvisual";
+import { KudosInputBar } from "./_components/kudos-input-bar";
+import { HighlightSection } from "./_components/highlight-section";
+import { SpotlightBoard } from "./_components/spotlight-board";
+import { AllKudosSection } from "./_components/all-kudos-section";
+import {
+  HIGHLIGHT_KUDOS,
+  ALL_KUDOS,
+  RANKUP_LIST,
+  GIFT_LIST,
+  USER_STATS,
+} from "./_data/kudos-mock";
 
-export default function SunKudosPage() {
+export const dynamic = "force-dynamic";
+
+export default async function SunKudosPage() {
+  const {
+    data: { user },
+  } = await (await createSupabaseServerClient()).auth.getUser();
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-[#0A0E1B] px-6 text-center text-white">
-      <h1 className="font-montserrat text-3xl font-bold md:text-5xl">
-        Sun* Kudos
-      </h1>
-      <p className="mt-4 max-w-md text-base text-white/70 md:text-lg">
-        Coming soon. The Sun* Kudos recognition program lives here.
-      </p>
-      <Link
-        href="/"
-        className="font-montserrat mt-8 inline-flex items-center rounded-lg bg-[#FFEA9E] px-6 py-3 font-bold text-[#00101A] transition-colors hover:brightness-95"
-      >
-        ← Back to home
-      </Link>
-    </main>
+    <div className="min-h-screen w-full bg-[#0A0E1B] flex flex-col">
+      <HomeHeader user={user} activePath="/sun-kudos" />
+      <main className="flex-1 pt-20">
+        <KudosKeyvisual>
+          <KudosInputBar />
+        </KudosKeyvisual>
+        <HighlightSection items={HIGHLIGHT_KUDOS} />
+        <SpotlightBoard totalCount={388} />
+        <AllKudosSection
+          items={ALL_KUDOS}
+          stats={USER_STATS}
+          rankups={RANKUP_LIST}
+          gifts={GIFT_LIST}
+        />
+      </main>
+      <HomeFooter activePath="/sun-kudos" />
+    </div>
   );
 }
