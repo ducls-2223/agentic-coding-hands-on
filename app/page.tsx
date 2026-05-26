@@ -5,7 +5,6 @@ import { HeroSection } from "./_components/hero-section";
 import { RootFurtherContent } from "./_components/root-further-content";
 import { AwardsSection } from "./_components/awards-section";
 import { SunKudosSection } from "./_components/sun-kudos-section";
-import { WidgetButton } from "./_components/widget-button";
 import { HomeFooter } from "./_components/home-footer";
 
 // Auth-gated by proxy.ts → reads cookies → cannot be statically prerendered.
@@ -29,9 +28,6 @@ export default async function HomePage() {
         <AwardsSection />
         <SunKudosSection />
       </main>
-
-      {/* Fixed floating widget */}
-      <WidgetButton />
 
       {/* Footer */}
       <HomeFooter />
