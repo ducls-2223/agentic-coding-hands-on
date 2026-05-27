@@ -80,6 +80,12 @@ export function LanguageSwitcher({ current, className }: LanguageSwitcherProps) 
 
     startTransition(() => {
       router.push(url);
+      // Force a fresh server render. router.push alone may serve a cached
+      // RSC payload for the same pathname, leaving server-rendered text in
+      // the prior language — only the reactive client Provider would flip.
+      // router.refresh() invalidates the Router Cache so server components
+      // re-read `x-lang` and translate with the new language.
+      router.refresh();
     });
   }
 
