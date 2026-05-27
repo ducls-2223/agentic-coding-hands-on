@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useActionState, useEffect, useRef, useState } from "react";
+import { useTranslation } from "@/app/_components/use-translation";
 
 import type { CreateKudosResult } from "../_actions/create-kudos";
 import { EditorToolbar } from "./editor-toolbar";
@@ -25,6 +26,7 @@ export function KudosWriteDialog({
   onSuccess,
   onClose,
 }: KudosWriteDialogProps) {
+  const { t } = useTranslation();
   // Submitted to the server action.
   const [content, setContent] = useState("");
 
@@ -70,7 +72,7 @@ export function KudosWriteDialog({
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
-      aria-label="Gửi lời cám ơn và ghi nhận đến đồng đội"
+      aria-label={t("kudos.dialog.title")}
     >
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -84,7 +86,7 @@ export function KudosWriteDialog({
       >
         <div className="flex-1 overflow-y-auto px-10 pt-10">
           <h2 className="mb-6 text-center text-2xl font-bold text-[#00101A]">
-            Gửi lời cám ơn và ghi nhận đến đồng đội
+            {t("kudos.dialog.title")}
           </h2>
 
           {/* Người nhận */}
@@ -93,8 +95,8 @@ export function KudosWriteDialog({
               htmlFor="kudos-recipient"
               className="pt-3 text-base font-bold text-[#00101A]"
             >
-              Người nhận
-              <span className="ml-0.5 text-[#B72927]">*</span>
+              {t("kudos.dialog.recipient_label")}
+              <span className="ml-0.5 text-[#B72927]">{t("common.required")}</span>
             </label>
             <RecipientAutocomplete
               inputId="kudos-recipient"
@@ -110,8 +112,8 @@ export function KudosWriteDialog({
               htmlFor="kudos-honor-title"
               className="pt-3 text-base font-bold text-[#00101A]"
             >
-              Danh hiệu
-              <span className="ml-0.5 text-[#B72927]">*</span>
+              {t("kudos.dialog.honor_label")}
+              <span className="ml-0.5 text-[#B72927]">{t("common.required")}</span>
             </label>
             <div>
               <input
@@ -120,13 +122,13 @@ export function KudosWriteDialog({
                 value={honorTitle}
                 onChange={(e) => setHonorTitle(e.target.value)}
                 disabled={pending}
-                placeholder="Dành tặng một danh hiệu cho đồng đội"
+                placeholder={t("kudos.dialog.honor_placeholder")}
                 className="h-14 w-full rounded-lg border border-[#998C5F] bg-white px-4 text-base text-[#00101A] placeholder:text-[#998C5F] focus:border-[#00101A] focus:outline-none disabled:opacity-60"
               />
               <p className="mt-2 text-xs leading-5 text-[#998C5F]">
-                Ví dụ: Người truyền động lực cho tôi.
+                {t("kudos.dialog.honor_hint_line1")}
                 <br />
-                Danh hiệu sẽ hiển thị làm tiêu đề Kudos của bạn.
+                {t("kudos.dialog.honor_hint_line2")}
               </p>
             </div>
           </div>
@@ -140,12 +142,12 @@ export function KudosWriteDialog({
               value={content}
               onChange={(e) => setContent(e.target.value)}
               disabled={pending}
-              placeholder="Hãy gửi gắm lời cám ơn và ghi nhận đến đồng đội tại đây nhé!"
+              placeholder={t("kudos.dialog.content_placeholder")}
               className="block h-[180px] w-full resize-none bg-transparent px-4 py-3 text-base text-[#00101A] placeholder:text-[#998C5F] focus:outline-none disabled:opacity-60"
             />
           </div>
           <p className="mb-6 text-center text-sm font-bold text-[#00101A]">
-            Bạn có thể &ldquo;@ + tên&rdquo; để nhắc tới đồng nghiệp khác
+            {t("kudos.dialog.mention_hint")}
           </p>
 
           {state && !state.ok && state.error && (
@@ -160,8 +162,8 @@ export function KudosWriteDialog({
           {/* Hashtag */}
           <div className="mb-6 grid grid-cols-[140px_1fr] items-start gap-x-6 gap-y-2">
             <label className="pt-2 text-base font-bold text-[#00101A]">
-              Hashtag
-              <span className="ml-0.5 text-[#B72927]">*</span>
+              {t("kudos.dialog.hashtag_label")}
+              <span className="ml-0.5 text-[#B72927]">{t("common.required")}</span>
             </label>
             <HashtagChips
               tags={hashtags}
@@ -173,12 +175,12 @@ export function KudosWriteDialog({
           {/* Image (disabled placeholder) */}
           <div className="mb-6 grid grid-cols-[140px_1fr] items-start gap-x-6 gap-y-2">
             <label className="pt-2 text-base font-bold text-[#00101A]">
-              Image
+              {t("kudos.dialog.image_label")}
             </label>
             <button
               type="button"
               disabled
-              title="Coming soon"
+              title={t("kudos.dialog.image_coming_soon")}
               className="inline-flex items-center gap-1.5 rounded-full border border-[#998C5F] bg-white px-3 py-1.5 text-sm font-bold text-[#00101A] opacity-50"
             >
               <Image
@@ -188,9 +190,9 @@ export function KudosWriteDialog({
                 height={12}
                 aria-hidden="true"
               />
-              <span>Image</span>
+              <span>{t("kudos.dialog.image_button")}</span>
               <span className="text-xs font-medium text-[#998C5F]">
-                Tối đa 5
+                {t("common.max")} 5
               </span>
             </button>
           </div>
@@ -205,7 +207,7 @@ export function KudosWriteDialog({
               className="h-5 w-5 rounded border-[#998C5F] accent-[#998C5F]"
             />
             <span className="text-sm font-bold text-[#00101A]">
-              Gửi lời cám ơn và ghi nhận ẩn danh
+              {t("kudos.dialog.anonymous")}
             </span>
           </label>
         </div>
@@ -226,7 +228,7 @@ export function KudosWriteDialog({
               className="invert"
               aria-hidden="true"
             />
-            Hủy
+            {t("common.cancel")}
           </button>
           <button
             type="submit"
@@ -234,10 +236,10 @@ export function KudosWriteDialog({
             className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#FFEA9E] px-6 py-3 text-sm font-bold text-[#00101A] transition-opacity hover:brightness-95 disabled:opacity-40"
           >
             {pending ? (
-              "Đang gửi…"
+              t("common.sending")
             ) : (
               <>
-                Gửi
+                {t("common.send")}
                 <Image
                   src="/kudos/editor/send.svg"
                   alt=""

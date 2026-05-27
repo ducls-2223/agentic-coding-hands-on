@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
 export interface AwardDetailProps {
   slug: string;
@@ -20,7 +22,7 @@ export interface AwardDetailProps {
  * Alternates left/right per imageRight prop.
  * Each section ends with a 1px #2E3940 divider.
  */
-export function AwardDetail({
+export async function AwardDetail({
   slug,
   title,
   description,
@@ -31,6 +33,7 @@ export function AwardDetail({
   image,
   imageRight = false,
 }: AwardDetailProps) {
+  const lang = await getLanguage();
   const countDisplay = unit
     ? `${String(count).padStart(2, "0")} ${unit}`
     : String(count).padStart(2, "0");
@@ -101,7 +104,7 @@ export function AwardDetail({
           className="flex-shrink-0"
         />
         <span className="font-montserrat text-2xl font-bold leading-8 text-[#FFEA9E]">
-          Số lượng giải thưởng:
+          {t(lang, "awards.count_label")}
         </span>
         <span className="font-montserrat text-sm font-bold leading-5 tracking-[0.1px] text-white ml-auto">
           {countDisplay}
@@ -122,7 +125,7 @@ export function AwardDetail({
             className="shrink-0"
           />
           <span className="font-montserrat text-2xl font-bold leading-8 text-[#FFEA9E]">
-            Giá trị giải thưởng:
+            {t(lang, "awards.value_label")}
           </span>
         </div>
         <p className="font-montserrat text-[36px] font-bold leading-11 text-white">

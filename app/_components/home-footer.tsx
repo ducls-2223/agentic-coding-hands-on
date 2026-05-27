@@ -1,18 +1,21 @@
 import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
 interface FooterProps {
   /** Pathname of the current route; used to highlight the active footer link. */
   activePath?: string;
 }
 
-const FOOTER_LINKS = [
-  { label: "About SAA 2025", href: "/" },
-  { label: "Awards Information", href: "/awards-information" },
-  { label: "Sun* Kudos", href: "/sun-kudos" },
-];
+export async function HomeFooter({ activePath = "/" }: FooterProps) {
+  const language = await getLanguage();
 
-export function HomeFooter({ activePath = "/" }: FooterProps) {
+  const FOOTER_LINKS = [
+    { label: t(language, "nav.about_saa"), href: "/" },
+    { label: t(language, "nav.awards_information"), href: "/awards-information" },
+    { label: t(language, "nav.sun_kudos"), href: "/sun-kudos" },
+  ];
   return (
     <footer className="w-full border-t border-[#2E3940] bg-[#0A0E1B]">
       <div className="mx-auto flex max-w-[1512px] items-center justify-between px-[90px] py-10">
@@ -49,7 +52,7 @@ export function HomeFooter({ activePath = "/" }: FooterProps) {
 
         {/* Right: copyright */}
         <p className="font-montserrat text-base font-bold text-white">
-          Bản quyền thuộc về Sun* © 2025
+          {t(language, "footer.copyright_alt")}
         </p>
       </div>
     </footer>

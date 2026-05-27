@@ -6,6 +6,7 @@ import { UserMenu } from "./user-menu";
 import { LanguageSwitcher } from "./language-switcher";
 import { signOut } from "@/app/(home)/_actions/sign-out";
 import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
 interface HomeHeaderProps {
   user: User | null;
@@ -13,14 +14,14 @@ interface HomeHeaderProps {
   activePath?: string;
 }
 
-const NAV_LINKS = [
-  { label: "About SAA 2025", href: "/" },
-  { label: "Awards Information", href: "/awards-information" },
-  { label: "Sun* Kudos", href: "/sun-kudos" },
-];
-
 export async function HomeHeader({ user, activePath = "/" }: HomeHeaderProps) {
   const language = await getLanguage();
+
+  const NAV_LINKS = [
+    { label: t(language, "nav.about_saa"), href: "/" },
+    { label: t(language, "nav.awards_information"), href: "/awards-information" },
+    { label: t(language, "nav.sun_kudos"), href: "/sun-kudos" },
+  ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex h-20 items-center justify-between bg-[rgba(16,20,23,0.80)] px-[144px] backdrop-blur-sm">
@@ -63,12 +64,12 @@ export async function HomeHeader({ user, activePath = "/" }: HomeHeaderProps) {
         {/* Notification bell */}
         <div className="relative">
           <button
-            aria-label="Notifications"
+            aria-label={t(language, "nav.notifications")}
             className="flex h-10 w-10 items-center justify-center rounded hover:bg-white/10 transition-colors"
           >
             <Image
               src="/home/icon-notification.svg"
-              alt="Notifications"
+              alt={t(language, "nav.notifications")}
               width={24}
               height={24}
             />

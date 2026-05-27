@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
 interface SpotlightBoardProps {
   totalCount: number;
@@ -36,13 +38,14 @@ const CLOUD_NAMES = [
   { name: "Nguyễn Hoàng Linh", size: "text-sm", top: "73%", left: "38%", opacity: 0.6 },
 ];
 
-export function SpotlightBoard({ totalCount }: SpotlightBoardProps) {
+export async function SpotlightBoard({ totalCount }: SpotlightBoardProps) {
+  const lang = await getLanguage();
   return (
     <section className="w-full" style={{ backgroundColor: "rgba(0, 16, 26, 1)" }}>
       <div className="px-[144px] pt-16 pb-0">
         <div className="flex flex-col gap-4">
           <p className="font-montserrat text-2xl font-bold leading-8 text-white">
-            Sun* Annual Awards 2025
+            {t(lang, "sun_kudos.title_brand")}
           </p>
           <div className="h-px w-full bg-[#2E3940]" />
           <div className="flex items-center gap-8">
@@ -50,7 +53,7 @@ export function SpotlightBoard({ totalCount }: SpotlightBoardProps) {
               className="font-montserrat text-[57px] font-bold leading-[64px] text-[#FFEA9E]"
               style={{ letterSpacing: "-0.25px" }}
             >
-              SPOTLIGHT BOARD
+              {t(lang, "sun_kudos.spotlight_title")}
             </h2>
           </div>
         </div>
@@ -82,7 +85,7 @@ export function SpotlightBoard({ totalCount }: SpotlightBoardProps) {
               aria-hidden="true"
             />
             <span className="font-montserrat text-sm font-bold text-white/40">
-              Tìm kiếm
+              {t(lang, "common.search")}
             </span>
           </div>
 
@@ -91,7 +94,7 @@ export function SpotlightBoard({ totalCount }: SpotlightBoardProps) {
             <button
               type="button"
               className="font-montserrat rounded-full border border-[#998C5F] bg-[rgba(255,234,158,0.08)] px-4 py-2 text-xs font-bold text-[#998C5F] transition-colors hover:bg-[rgba(255,234,158,0.15)]"
-              aria-label="Bật/tắt pan và zoom"
+              aria-label={t(lang, "sun_kudos.spotlight_pan_zoom")}
             >
               Pan / Zoom
             </button>

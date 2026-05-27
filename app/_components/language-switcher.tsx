@@ -9,6 +9,7 @@ import {
   LANGUAGE_PARAM,
   type Language,
 } from "@/lib/i18n";
+import { useTranslation } from "./use-translation";
 
 interface LanguageOption {
   code: Language;
@@ -29,6 +30,7 @@ interface LanguageSwitcherProps {
 }
 
 export function LanguageSwitcher({ current, className }: LanguageSwitcherProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -89,7 +91,7 @@ export function LanguageSwitcher({ current, className }: LanguageSwitcherProps) 
         disabled={pending}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label={`Ngôn ngữ hiện tại: ${selectedOption.label}`}
+        aria-label={`${t("language.current")}: ${selectedOption.label}`}
         className="flex h-14 w-[108px] items-center justify-between gap-1 rounded px-4 py-4 text-sm font-bold text-white transition-colors hover:bg-white/10 disabled:opacity-60"
       >
         <span className="flex items-center gap-1.5">
@@ -123,7 +125,7 @@ export function LanguageSwitcher({ current, className }: LanguageSwitcherProps) 
       {open && (
         <ul
           role="listbox"
-          aria-label="Chọn ngôn ngữ"
+          aria-label={t("language.select")}
           className="absolute right-0 top-full z-50 mt-2 w-[140px] overflow-hidden rounded-lg border border-white/10 bg-[#00101A] shadow-xl"
         >
           {OPTIONS.map((option) => {

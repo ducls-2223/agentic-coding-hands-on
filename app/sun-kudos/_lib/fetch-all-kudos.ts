@@ -1,3 +1,4 @@
+import type { Language } from "@/lib/i18n";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import type { KudosItem } from "../_data/kudos-mock";
@@ -36,7 +37,7 @@ function firstRecipient(
   return Array.isArray(recipients) ? (recipients[0] ?? null) : recipients;
 }
 
-export async function fetchAllKudos(): Promise<KudosItem[]> {
+export async function fetchAllKudos(lang: Language): Promise<KudosItem[]> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("kudos")
@@ -75,7 +76,7 @@ export async function fetchAllKudos(): Promise<KudosItem[]> {
         message: row.content,
         hashtags: (row.kudos_hashtags ?? []).map((h) => h.hashtag),
         likes: 0,
-        timestamp: formatRelativeTime(row.created_at),
+        timestamp: formatRelativeTime(row.created_at, lang),
         images: row.images ?? undefined,
       };
     })

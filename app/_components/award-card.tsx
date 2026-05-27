@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
 export interface AwardCardData {
   slug: string;
@@ -8,7 +10,8 @@ export interface AwardCardData {
   image: string;
 }
 
-export function AwardCard({ slug, title, desc, image }: AwardCardData) {
+export async function AwardCard({ slug, title, desc, image }: AwardCardData) {
+  const lang = await getLanguage();
   return (
     <div className="flex flex-col gap-4">
       {/* Thumbnail */}
@@ -34,7 +37,7 @@ export function AwardCard({ slug, title, desc, image }: AwardCardData) {
           href={`/awards-information#${slug}`}
           className="flex items-center gap-2 font-montserrat text-base font-bold text-[#FFEA9E] hover:underline transition-colors"
         >
-          Chi tiết
+          {t(lang, "common.view_details")}
           <Image
             src="/home/icon-arrow-right.svg"
             alt=""

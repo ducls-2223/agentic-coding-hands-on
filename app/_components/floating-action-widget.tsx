@@ -6,10 +6,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createKudos } from "@/app/sun-kudos/_actions/create-kudos";
 import { KudosWriteDialog } from "@/app/sun-kudos/_components/kudos-write-dialog";
 import { RulesModal } from "./rules-modal";
+import { useTranslation } from "./use-translation";
 
 type Mode = "collapsed" | "expanded" | "dialog" | "rules";
 
 export function FloatingActionWidget() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<Mode>("collapsed");
   const [toast, setToast] = useState<string | null>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -56,8 +58,8 @@ export function FloatingActionWidget() {
 
   const handleDialogSuccess = useCallback(() => {
     setMode("collapsed");
-    showToast("Kudos đã được gửi!");
-  }, [showToast]);
+    showToast(t("fab.kudos_sent"));
+  }, [showToast, t]);
 
   return (
     <>
@@ -66,7 +68,7 @@ export function FloatingActionWidget() {
         <button
           type="button"
           onClick={() => setMode("expanded")}
-          aria-label="Mở widget hành động nhanh"
+          aria-label={t("fab.open_menu")}
           className="fixed bottom-6 right-6 z-40 flex h-[44px] w-[64px] items-center justify-center gap-1 rounded-full bg-[#FFEA9E] px-3 shadow-lg transition-shadow hover:shadow-xl"
         >
           <Image
@@ -93,7 +95,7 @@ export function FloatingActionWidget() {
           ref={expandedRef}
           className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3"
           role="menu"
-          aria-label="Widget hành động nhanh"
+          aria-label={t("fab.open_menu")}
         >
           <button
             type="button"
@@ -108,7 +110,7 @@ export function FloatingActionWidget() {
               height={18}
               aria-hidden="true"
             />
-            Thể lệ
+            {t("fab.rules")}
           </button>
           <button
             type="button"
@@ -123,12 +125,12 @@ export function FloatingActionWidget() {
               height={18}
               aria-hidden="true"
             />
-            Viết KUDOS
+            {t("fab.write_kudos")}
           </button>
           <button
             type="button"
             onClick={collapse}
-            aria-label="Đóng widget"
+            aria-label={t("fab.close_menu")}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-[#B72927] shadow-lg transition-shadow hover:shadow-xl"
           >
             <Image

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "@/app/_components/use-translation";
 
 interface KudosActionBarProps {
   kudosId: string;
@@ -20,6 +21,7 @@ export function KudosActionBar({
   initialLikes,
   showViewDetails = false,
 }: KudosActionBarProps) {
+  const { t } = useTranslation();
   const [liked, setLiked] = useState(false);
   const [count, setCount] = useState(initialLikes);
   const [toast, setToast] = useState<string | null>(null);
@@ -48,9 +50,9 @@ export function KudosActionBar({
     try {
       if (!navigator.clipboard) throw new Error("clipboard unavailable");
       await navigator.clipboard.writeText(url);
-      showToast("Link copied — ready to share!");
+      showToast(t("common.link_copied"));
     } catch {
-      showToast("Couldn't copy. Try manually.");
+      showToast(t("common.copy_link"));
     }
   }
 
@@ -62,7 +64,7 @@ export function KudosActionBar({
           onClick={toggleLike}
           className="flex items-center gap-2 transition-opacity hover:opacity-80"
           aria-pressed={liked}
-          aria-label={liked ? "Bỏ thích" : "Thích"}
+          aria-label={liked ? t("sun_kudos.card.unlike") : t("sun_kudos.card.like")}
         >
           <Image
             src="/kudos/heart.svg"
@@ -91,7 +93,7 @@ export function KudosActionBar({
           type="button"
           onClick={copyLink}
           className="flex items-center gap-2 transition-opacity hover:opacity-80"
-          aria-label="Sao chép liên kết"
+          aria-label={t("sun_kudos.card.copy_link")}
         >
           <Image
             src="/kudos/copy-link.svg"
@@ -107,10 +109,10 @@ export function KudosActionBar({
       {showViewDetails && (
         <button
           type="button"
-          onClick={() => showToast("Trang chi tiết Kudos sẽ sớm có mặt.")}
+          onClick={() => showToast(t("sun_kudos.detail_coming_soon"))}
           className="font-montserrat text-sm font-bold text-[#FFEA9E] underline-offset-2 transition-colors hover:underline"
         >
-          Xem chi tiết →
+          {t("common.view_details")} →
         </button>
       )}
 

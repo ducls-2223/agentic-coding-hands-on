@@ -1,11 +1,10 @@
 import type { Language } from "../i18n";
+import { EN } from "./dictionaries/en";
+import { VI, type ViDictionary } from "./dictionaries/vi";
 
-// Scaffold dictionaries. Empty by design — strings live in JSX today; future
-// callers can populate these maps to localize specific keys without touching
-// the i18n machinery itself.
-type Dictionary = Record<string, string>;
+export type TranslationKey = keyof ViDictionary;
 
-export const DICTIONARIES: Record<Language, Dictionary> = {
-  vi: {},
-  en: {},
+export const DICTIONARIES: Record<Language, Partial<Record<TranslationKey, string>>> = {
+  vi: VI,
+  en: EN,
 };

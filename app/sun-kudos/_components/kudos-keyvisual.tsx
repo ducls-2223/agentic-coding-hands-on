@@ -1,5 +1,7 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
 /**
  * Sun* Kudos banner. Hosts the title + KUDOS branded logo over the artwork,
@@ -10,7 +12,8 @@ interface KudosKeyvisualProps {
   children?: ReactNode;
 }
 
-export function KudosKeyvisual({ children }: KudosKeyvisualProps) {
+export async function KudosKeyvisual({ children }: KudosKeyvisualProps) {
+  const lang = await getLanguage();
   return (
     <section className="relative w-full overflow-hidden">
       <div className="absolute inset-0">
@@ -38,7 +41,7 @@ export function KudosKeyvisual({ children }: KudosKeyvisualProps) {
             className="font-montserrat text-[36px] font-bold leading-[44px] text-[#FFEA9E]"
             style={{ letterSpacing: 0 }}
           >
-            Hệ thống ghi nhận và cảm ơn
+            {t(lang, "sun_kudos.kv_title")}
           </h1>
           <Image
             src="/kudos/kv-logo.svg"

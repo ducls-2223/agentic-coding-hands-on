@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import { KudosItem } from "../_data/kudos-mock";
 import { KudosActionBar } from "./kudos-action-bar";
+import { useTranslation } from "@/app/_components/use-translation";
 
 interface KudosCardProps {
   item: KudosItem;
@@ -8,6 +11,7 @@ interface KudosCardProps {
 }
 
 export function KudosCard({ item, variant = "feed" }: KudosCardProps) {
+  const { t } = useTranslation();
   return (
     <article
       className="flex flex-col gap-4 rounded-3xl p-10 pb-4"
@@ -24,7 +28,7 @@ export function KudosCard({ item, variant = "feed" }: KudosCardProps) {
         <div className="flex flex-col items-center justify-center py-4">
           <Image
             src="/kudos/sent-arrow.svg"
-            alt="gửi đến"
+            alt={t("sun_kudos.card.sent_to")}
             width={32}
             height={32}
           />
@@ -74,7 +78,7 @@ export function KudosCard({ item, variant = "feed" }: KudosCardProps) {
               >
                 <Image
                   src={src}
-                  alt={`Gallery image ${i + 1}`}
+                  alt={`${t("sun_kudos.card.gallery_image")} ${i + 1}`}
                   fill
                   sizes="64px"
                   className="object-cover"

@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getLanguage } from "@/lib/i18n/server";
 import { HomeHeader } from "@/app/_components/home-header";
 import { HomeFooter } from "@/app/_components/home-footer";
 import { KudosKeyvisual } from "./_components/kudos-keyvisual";
@@ -17,13 +18,16 @@ import { fetchAllKudos } from "./_lib/fetch-all-kudos";
 export const dynamic = "force-dynamic";
 
 export default async function SunKudosPage() {
-  const supabase = await createSupabaseServerClient();
+  const [lang, supabase] = await Promise.all([
+    getLanguage(),
+    createSupabaseServerClient(),
+  ]);
   const [
     {
       data: { user },
     },
     allKudos,
-  ] = await Promise.all([supabase.auth.getUser(), fetchAllKudos()]);
+  ] = await Promise.all([supabase.auth.getUser(), fetchAllKudos(lang)]);
 
   return (
     <div className="min-h-screen w-full bg-[#0A0E1B] flex flex-col">

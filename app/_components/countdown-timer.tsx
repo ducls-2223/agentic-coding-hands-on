@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { resolveEventStartMs } from "@/lib/event-time";
+import { useTranslation } from "./use-translation";
 
 interface TimeLeft {
   days: number;
@@ -69,9 +70,11 @@ interface CountdownTimerProps {
  * real values from the client clock and starts the interval.
  */
 export function CountdownTimer({
-  title = "Coming soon",
+  title,
   onComplete,
 }: CountdownTimerProps = {}) {
+  const { t } = useTranslation();
+  const resolvedTitle = title ?? t("countdown.coming_soon");
   const targetMs = useMemo(() => resolveEventStartMs(), []);
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
   const completeFiredRef = useRef(false);
@@ -117,13 +120,13 @@ export function CountdownTimer({
     <div className="flex flex-col gap-4">
       {!isOver && (
         <p className="font-montserrat text-2xl font-bold leading-8 text-white">
-          {title}
+          {resolvedTitle}
         </p>
       )}
       <div className="flex items-start gap-10">
-        <UnitBlock value={timeLeft.days} label="DAYS" />
-        <UnitBlock value={timeLeft.hours} label="HOURS" />
-        <UnitBlock value={timeLeft.minutes} label="MINUTES" />
+        <UnitBlock value={timeLeft.days} label={t("countdown.days")} />
+        <UnitBlock value={timeLeft.hours} label={t("countdown.hours")} />
+        <UnitBlock value={timeLeft.minutes} label={t("countdown.minutes")} />
       </div>
     </div>
   );

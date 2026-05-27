@@ -4,10 +4,12 @@ import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 import { CountdownTimer } from "@/app/_components/countdown-timer";
+import { useTranslation } from "@/app/_components/use-translation";
 
 const REDIRECT_DELAY_MS = 3000;
 
 export function PrelaunchContent() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [eventLive, setEventLive] = useState(false);
 
@@ -23,11 +25,11 @@ export function PrelaunchContent() {
     <div className="flex flex-col items-center gap-6 text-center">
       {eventLive ? (
         <p className="font-montserrat text-3xl font-bold leading-10 text-[#FFEA9E]">
-          Sự kiện đã bắt đầu! Đang chuyển trang…
+          {t("common.event_live")} {t("common.redirecting")}
         </p>
       ) : (
         <CountdownTimer
-          title="Sự kiện sẽ bắt đầu sau"
+          title={t("countdown.event_starts")}
           onComplete={handleComplete}
         />
       )}

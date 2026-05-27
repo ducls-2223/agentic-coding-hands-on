@@ -10,13 +10,16 @@
  */
 
 import Image from "next/image";
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
 interface GoogleLoginButtonProps {
   /** Server action bound to the form. */
   action: () => void | Promise<void>;
 }
 
-export default function GoogleLoginButton({ action }: GoogleLoginButtonProps) {
+export default async function GoogleLoginButton({ action }: GoogleLoginButtonProps) {
+  const lang = await getLanguage();
   return (
     <form action={action} className="w-full max-w-[305px]">
       <button
@@ -34,7 +37,7 @@ export default function GoogleLoginButton({ action }: GoogleLoginButtonProps) {
           className="font-montserrat shrink-0 font-bold leading-7 tracking-normal"
           style={{ fontSize: "22px" }}
         >
-          LOGIN With Google
+          {t(lang, "login.google_button")}
         </span>
         {/* Google G icon: right side — 24×24 per design node I662:14426;186:1766 */}
         <Image
