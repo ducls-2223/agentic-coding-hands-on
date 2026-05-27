@@ -4,8 +4,10 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { KudosItem } from "../_data/kudos-mock";
 import type { Department } from "../_data/departments";
+import type { AvailableHashtag } from "../_data/hashtags";
 import { KudosCard } from "./kudos-card";
 import { DepartmentFilter } from "./department-filter";
+import { HashtagFilter } from "./hashtag-filter";
 import { useTranslation } from "@/app/_components/use-translation";
 
 interface HighlightSectionProps {
@@ -23,16 +25,32 @@ export function HighlightSection({ items }: HighlightSectionProps) {
   const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const [department, setDepartment] = useState<Department | null>(null);
+  const [hashtags, setHashtags] = useState<AvailableHashtag[]>([]);
 
-  // Filter by recipient department; null means no filter. Reset the carousel
-  // index when the filter narrows the list so we never point past the end.
+  // Combined filter: department (single) ∧ hashtag (any-of). Reset carousel
+  // index when filters change so we never point past the end.
   const filteredItems = useMemo(() => {
-    if (!department) return items;
-    return items.filter((item) => item.receiver.department === department);
-  }, [items, department]);
+    let out = items;
+    if (department) {
+      out = out.filter((item) => item.receiver.department === department);
+    }
+    if (hashtags.length > 0) {
+      out = out.filter((item) =>
+        item.hashtags.some((tag) =>
+          (hashtags as readonly string[]).includes(tag),
+        ),
+      );
+    }
+    return out;
+  }, [items, department, hashtags]);
 
   function handleDepartmentChange(next: Department | null) {
     setDepartment(next);
+    setIndex(0);
+  }
+
+  function handleHashtagsChange(next: AvailableHashtag[]) {
+    setHashtags(next);
     setIndex(0);
   }
 
@@ -60,13 +78,10 @@ export function HighlightSection({ items }: HighlightSectionProps) {
               {t("sun_kudos.highlight_title")}
             </h2>
             <div className="flex items-center gap-4">
-              <button
-                type="button"
-                className="font-montserrat flex items-center gap-2 rounded-full border border-[#998C5F] bg-[rgba(255,234,158,0.10)] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[rgba(255,234,158,0.18)]"
-              >
-                {t("kudos.dialog.hashtag_button")}
-                <Image src="/login/chevron-down.svg" alt="" width={16} height={16} aria-hidden="true" />
-              </button>
+              <HashtagFilter
+                value={hashtags}
+                onChange={handleHashtagsChange}
+              />
               <DepartmentFilter
                 value={department}
                 onChange={handleDepartmentChange}
