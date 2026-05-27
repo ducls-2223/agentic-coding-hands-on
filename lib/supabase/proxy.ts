@@ -2,13 +2,18 @@ import "server-only";
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
+import { resolveEventStartMs } from "@/lib/event-time";
 import { getSupabaseEnv } from "./env";
+
+const PRELAUNCH_PATH = "/prelaunch";
 
 /**
  * Auth gating + session-cookie refresh for the Next.js 16 Proxy
  * (formerly Middleware).
  *
  * - Refreshes Supabase session cookies on every request.
+ * - Pre-event: redirect every route to /prelaunch.
+ * - Post-event: /prelaunch redirects to /; auth gate applies as normal.
  * - Unauthenticated users hitting protected routes → redirect to /login.
  * - Authenticated users on /login → redirect to /.
  *
@@ -16,7 +21,32 @@ import { getSupabaseEnv } from "./env";
  * `/auth/callback` (the callback must run before the gate sees the session).
  */
 export async function updateSupabaseSession(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const pathname = request.nextUrl.pathname;
+  const beforeEvent = Date.now() < resolveEventStartMs();
+  const isPrelaunchRoute = pathname === PRELAUNCH_PATH;
+
+  // Expose the current pathname to the root layout so it can vary chrome
+  // (e.g. hide the FAB on /prelaunch). Next does not provide pathname in
+  // `headers()` by default — proxies must inject it themselves.
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", pathname);
+  const requestInit = { request: { headers: requestHeaders } };
+
+  // Pre-event gate: bypass auth entirely and force everyone to /prelaunch.
+  if (beforeEvent) {
+    if (isPrelaunchRoute) return NextResponse.next(requestInit);
+    return NextResponse.redirect(
+      buildRedirectUrl(request, PRELAUNCH_PATH),
+    );
+  }
+
+  // Post-event: keep /prelaunch from lingering — kick visitors back home so
+  // the auth gate below can then route them to /login if needed.
+  if (isPrelaunchRoute) {
+    return NextResponse.redirect(buildRedirectUrl(request, "/"));
+  }
+
+  let response = NextResponse.next(requestInit);
   const { url, publishableKey } = getSupabaseEnv();
 
   const supabase = createServerClient(url, publishableKey, {
@@ -28,7 +58,9 @@ export async function updateSupabaseSession(request: NextRequest) {
         for (const { name, value } of cookiesToSet) {
           request.cookies.set(name, value);
         }
-        response = NextResponse.next({ request });
+        // requestInit must stay in this closure: it carries x-pathname.
+        // Extracting setAll to a standalone factory would silently drop it.
+        response = NextResponse.next(requestInit);
         for (const { name, value, options } of cookiesToSet) {
           response.cookies.set(name, value, options);
         }
@@ -49,7 +81,6 @@ export async function updateSupabaseSession(request: NextRequest) {
     user = null;
   }
 
-  const pathname = request.nextUrl.pathname;
   const isLoginRoute = pathname === "/login";
 
   if (!user && !isLoginRoute) {
@@ -73,13 +104,16 @@ function buildRedirect(
   request: NextRequest,
   pathname: string,
 ): NextResponse {
-  const redirectUrl = request.nextUrl.clone();
-  redirectUrl.pathname = pathname;
-  redirectUrl.search = "";
-
-  const redirect = NextResponse.redirect(redirectUrl);
+  const redirect = NextResponse.redirect(buildRedirectUrl(request, pathname));
   for (const cookie of baseResponse.cookies.getAll()) {
     redirect.cookies.set(cookie);
   }
   return redirect;
+}
+
+function buildRedirectUrl(request: NextRequest, pathname: string): URL {
+  const url = request.nextUrl.clone();
+  url.pathname = pathname;
+  url.search = "";
+  return url;
 }
