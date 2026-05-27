@@ -1,9 +1,12 @@
 import Image from "next/image";
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
 
 import { CountdownTimer } from "./countdown-timer";
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
-export function HeroSection() {
+export async function HeroSection() {
+  const lang = await getLanguage();
   return (
     <section className="relative w-full min-h-175 lg:min-h-225 overflow-hidden">
       {/* Full-bleed background */}
@@ -62,7 +65,7 @@ export function HeroSection() {
               href="/awards-information"
               className="flex h-15 items-center gap-2 rounded-lg bg-[#FFEA9E] px-6 py-4 font-montserrat text-sm sm:text-base font-bold text-[#00101A] hover:bg-[#f5de8a] active:bg-[#edd876] transition-colors duration-200"
             >
-              ABOUT AWARDS
+              {t(lang, "home.awards.cta")}
               <Image
                 src="/home/icon-arrow-right.svg"
                 alt=""
@@ -74,7 +77,7 @@ export function HeroSection() {
               href="/sun-kudos"
               className="flex h-15 items-center gap-2 rounded-lg border border-[#998C5F] bg-[rgba(255,234,158,0.10)] px-6 py-4 font-montserrat text-sm sm:text-base font-bold text-white hover:bg-[rgba(255,234,158,0.20)] active:bg-[rgba(255,234,158,0.30)] transition-colors duration-200"
             >
-              ABOUT KUDOS
+              {t(lang, "home.kudos.cta")}
               <Image
                 src="/home/icon-arrow-right.svg"
                 alt=""

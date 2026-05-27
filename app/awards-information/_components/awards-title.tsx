@@ -1,14 +1,18 @@
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
+
 /**
  * Section header: small caption + divider + large yellow heading.
  * Mirrors the mms_A_Title hệ thống giải thưởng Figma frame.
  */
-export function AwardsTitle() {
+export async function AwardsTitle() {
+  const lang = await getLanguage();
   return (
     <div className="mx-auto w-full max-w-[1440px] px-[144px]">
       <div className="flex flex-col gap-4">
         {/* Caption */}
         <p className="font-montserrat text-center text-2xl font-bold leading-8 text-white">
-          Sun* Annual Awards 2025
+          {t(lang, "awards.subtitle")}
         </p>
 
         {/* Divider */}
@@ -17,7 +21,7 @@ export function AwardsTitle() {
         {/* Big yellow heading */}
         <div className="flex items-center justify-center">
           <h1 className="font-montserrat text-[57px] font-bold leading-[64px] tracking-[-0.25px] text-[#FFEA9E]">
-            Hệ thống giải thưởng SAA 2025
+            {t(lang, "awards.title_full")}
           </h1>
         </div>
       </div>

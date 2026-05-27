@@ -1,6 +1,8 @@
 import { KudosItem, LeaderboardItem, UserStats } from "../_data/kudos-mock";
 import { KudosCard } from "./kudos-card";
 import { KudosSidebar } from "./kudos-sidebar";
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
 interface AllKudosSectionProps {
   items: KudosItem[];
@@ -9,13 +11,14 @@ interface AllKudosSectionProps {
   gifts: LeaderboardItem[];
 }
 
-export function AllKudosSection({ items, stats, rankups, gifts }: AllKudosSectionProps) {
+export async function AllKudosSection({ items, stats, rankups, gifts }: AllKudosSectionProps) {
+  const lang = await getLanguage();
   return (
     <section className="flex w-full flex-col gap-10 py-16">
       <div className="px-[144px]">
         <div className="flex flex-col gap-4">
           <p className="font-montserrat text-2xl font-bold leading-8 text-white">
-            Sun* Annual Awards 2025
+            {t(lang, "sun_kudos.title_brand")}
           </p>
           <div className="h-px w-full bg-[#2E3940]" />
           <div className="flex items-center justify-between gap-8">
@@ -23,7 +26,7 @@ export function AllKudosSection({ items, stats, rankups, gifts }: AllKudosSectio
               className="font-montserrat text-[57px] font-bold leading-[64px] text-[#FFEA9E]"
               style={{ letterSpacing: "-0.25px" }}
             >
-              ALL KUDOS
+              {t(lang, "sun_kudos.all_kudos_title")}
             </h2>
           </div>
         </div>

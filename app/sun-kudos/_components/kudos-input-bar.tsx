@@ -5,8 +5,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { createKudos } from "../_actions/create-kudos";
 import { KudosWriteDialog } from "./kudos-write-dialog";
+import { useTranslation } from "@/app/_components/use-translation";
 
 export function KudosInputBar() {
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -27,8 +29,8 @@ export function KudosInputBar() {
   // re-creation each render would re-fire the success effect.
   const handleSuccess = useCallback(() => {
     setDialogOpen(false);
-    showToast("Kudos đã được gửi!");
-  }, [showToast]);
+    showToast(t("fab.kudos_sent"));
+  }, [showToast, t]);
 
   const handleClose = useCallback(() => setDialogOpen(false), []);
 
@@ -40,7 +42,7 @@ export function KudosInputBar() {
           onClick={() => setDialogOpen(true)}
           className="flex flex-1 items-center gap-4 rounded-[68px] border border-[#998C5F] bg-[rgba(255,234,158,0.10)] px-4 py-6 text-left transition-colors hover:bg-[rgba(255,234,158,0.18)]"
           style={{ maxWidth: "738px" }}
-          aria-label="Mở hộp ghi nhận lời cảm ơn"
+          aria-label={t("sun_kudos.input_open")}
         >
           <Image
             src="/home/widget-pencil.svg"
@@ -50,7 +52,7 @@ export function KudosInputBar() {
             aria-hidden="true"
           />
           <span className="font-montserrat flex-1 text-base font-bold leading-6 text-white/60">
-            Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?
+            {t("sun_kudos.input_placeholder")}
           </span>
         </button>
 
@@ -66,7 +68,7 @@ export function KudosInputBar() {
             aria-hidden="true"
           />
           <span className="font-montserrat text-base font-bold leading-6 text-white/60">
-            Tìm kiếm profile Sunner
+            {t("sun_kudos.search_sunner")}
           </span>
         </div>
 

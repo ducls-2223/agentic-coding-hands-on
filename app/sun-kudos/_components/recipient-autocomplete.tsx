@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "@/app/_components/use-translation";
 
 interface RecipientOption {
   name: string;
@@ -33,6 +34,7 @@ export function RecipientAutocomplete({
   disabled,
   inputId,
 }: RecipientAutocompleteProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -66,14 +68,14 @@ export function RecipientAutocomplete({
           }}
           onFocus={() => setOpen(true)}
           disabled={disabled}
-          placeholder="Tìm kiếm"
+          placeholder={t("kudos.dialog.recipient_placeholder")}
           className="font-montserrat h-14 w-full rounded-lg border border-[#998C5F] bg-white px-4 pr-12 text-base text-[#00101A] placeholder:text-[#998C5F] focus:border-[#00101A] focus:outline-none disabled:opacity-60"
         />
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           disabled={disabled}
-          aria-label="Mở danh sách người nhận"
+          aria-label={t("kudos.dialog.recipient_open_list")}
           className="absolute right-3 top-1/2 -translate-y-1/2 p-2 disabled:opacity-50"
         >
           <Image

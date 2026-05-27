@@ -3,7 +3,9 @@ import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getLanguage } from "@/lib/i18n/server";
 import { FloatingActionWidget } from "./_components/floating-action-widget";
+import { LanguageProvider } from "./_components/language-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +39,8 @@ export default async function RootLayout({
       data: { user },
     },
     headerList,
-  ] = await Promise.all([supabase.auth.getUser(), headers()]);
+    language,
+  ] = await Promise.all([supabase.auth.getUser(), headers(), getLanguage()]);
 
   // Hide the FAB on /prelaunch — proxy.ts injects the request pathname so the
   // layout can vary chrome without re-deriving it from the URL.
@@ -46,12 +49,14 @@ export default async function RootLayout({
 
   return (
     <html
-      lang="vi"
+      lang={language}
       className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {children}
-        {showWidget && <FloatingActionWidget />}
+        <LanguageProvider initial={language}>
+          {children}
+          {showWidget && <FloatingActionWidget />}
+        </LanguageProvider>
       </body>
     </html>
   );

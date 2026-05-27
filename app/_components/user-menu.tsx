@@ -2,8 +2,9 @@
 
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
 import type { User } from "@supabase/supabase-js";
+import { useTranslation } from "./use-translation";
 
 interface UserMenuProps {
   user: User | null;
@@ -11,6 +12,7 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user, signOutAction }: UserMenuProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -32,7 +34,7 @@ export function UserMenu({ user, signOutAction }: UserMenuProps) {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setOpen((v) => !v)}
-        aria-label="User menu"
+        aria-label={t("nav.profile")}
         className="flex h-10 w-10 items-center justify-center rounded border border-[#998C5F] hover:bg-white/10 transition-colors"
       >
         {avatarUrl ? (
@@ -63,14 +65,14 @@ export function UserMenu({ user, signOutAction }: UserMenuProps) {
             className="block px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
             onClick={() => setOpen(false)}
           >
-            Profile
+            {t("nav.profile")}
           </Link>
           <form action={signOutAction}>
             <button
               type="submit"
               className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 transition-colors"
             >
-              Sign out
+              {t("nav.sign_out")}
             </button>
           </form>
         </div>

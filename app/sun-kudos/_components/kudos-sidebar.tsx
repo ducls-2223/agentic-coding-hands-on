@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { LeaderboardItem, UserStats } from "../_data/kudos-mock";
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
 interface KudosSidebarProps {
   stats: UserStats;
@@ -7,7 +9,8 @@ interface KudosSidebarProps {
   gifts: LeaderboardItem[];
 }
 
-export function KudosSidebar({ stats, rankups, gifts }: KudosSidebarProps) {
+export async function KudosSidebar({ stats, rankups, gifts }: KudosSidebarProps) {
+  const lang = await getLanguage();
   return (
     <aside className="flex w-full flex-col gap-6 lg:w-[422px]">
       <div
@@ -15,18 +18,18 @@ export function KudosSidebar({ stats, rankups, gifts }: KudosSidebarProps) {
         style={{ backgroundColor: "#00070C" }}
       >
         <div className="flex flex-col gap-4">
-          <StatRow label="Số Kudos nhận được" value={stats.received} />
-          <StatRow label="Số Kudos đã gửi" value={stats.sent} />
-          <StatRow label="Số tim nhận được" value={stats.hearts} />
+          <StatRow label={t(lang, "sun_kudos.sidebar.received")} value={stats.received} />
+          <StatRow label={t(lang, "sun_kudos.sidebar.sent")} value={stats.sent} />
+          <StatRow label={t(lang, "sun_kudos.sidebar.hearts")} value={stats.hearts} />
           <div className="h-px w-full bg-[#2E3940]" />
-          <StatRow label="Số Secret Box đã mở" value={stats.secretBoxOpened} />
-          <StatRow label="Số Secret Box chưa mở" value={stats.secretBoxUnopened} />
+          <StatRow label={t(lang, "sun_kudos.sidebar.secret_box_opened")} value={stats.secretBoxOpened} />
+          <StatRow label={t(lang, "sun_kudos.sidebar.secret_box_unopened")} value={stats.secretBoxUnopened} />
 
           <button
             type="button"
             className="font-montserrat mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-[#FFEA9E] py-4 text-[22px] font-bold text-[#00101A] transition-opacity hover:brightness-95"
           >
-            Mở Secret Box
+            {t(lang, "sun_kudos.sidebar.open_secret_box")}
             <Image
               src="/kudos/open-box.svg"
               alt=""
@@ -43,7 +46,7 @@ export function KudosSidebar({ stats, rankups, gifts }: KudosSidebarProps) {
         style={{ backgroundColor: "#00070C" }}
       >
         <h3 className="font-montserrat text-sm font-bold uppercase text-[#FFEA9E]">
-          10 Sunner có sự thăng hạng mới nhất
+          {t(lang, "sun_kudos.sidebar.rankups_title")}
         </h3>
         <div className="flex flex-col gap-3">
           {rankups.map((item) => (
@@ -57,7 +60,7 @@ export function KudosSidebar({ stats, rankups, gifts }: KudosSidebarProps) {
         style={{ backgroundColor: "#00070C" }}
       >
         <h3 className="font-montserrat text-sm font-bold uppercase text-[#FFEA9E]">
-          10 Sunner nhận quà mới nhất
+          {t(lang, "sun_kudos.sidebar.gifts_title")}
         </h3>
         <div className="flex flex-col gap-3">
           {gifts.map((item) => (

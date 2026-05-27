@@ -5,25 +5,28 @@
  * Design ref: inline banner above the Google login button (per clarifications)
  */
 
-/** Known OAuth error codes and their Vietnamese messages */
-const ERROR_MESSAGES: Record<string, string> = {
-  oauth_init_failed: "Đăng nhập thất bại. Vui lòng thử lại.",
-  oauth_exchange_failed: "Đăng nhập thất bại. Vui lòng thử lại.",
-  oauth_missing_code: "Đăng nhập thất bại. Vui lòng thử lại.",
-  // Generic fallback for unknown codes
-  default: "Đã xảy ra lỗi. Vui lòng thử lại.",
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
+import type { TranslationKey } from "@/lib/i18n/dictionaries";
+
+/** Maps known OAuth error codes to translation keys */
+const ERROR_KEY_MAP: Record<string, TranslationKey> = {
+  oauth_init_failed: "login.error.generic",
+  oauth_exchange_failed: "login.error.oauth_failed",
+  oauth_missing_code: "login.error.generic",
 };
 
-function getErrorMessage(code: string): string {
-  return ERROR_MESSAGES[code] ?? ERROR_MESSAGES.default;
+function getErrorKey(code: string): TranslationKey {
+  return ERROR_KEY_MAP[code] ?? "login.error.generic";
 }
 
 interface LoginErrorBannerProps {
   errorCode: string;
 }
 
-export default function LoginErrorBanner({ errorCode }: LoginErrorBannerProps) {
-  const message = getErrorMessage(errorCode);
+export default async function LoginErrorBanner({ errorCode }: LoginErrorBannerProps) {
+  const lang = await getLanguage();
+  const message = t(lang, getErrorKey(errorCode));
 
   return (
     <div

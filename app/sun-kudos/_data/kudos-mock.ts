@@ -3,6 +3,8 @@ export interface KudosPerson {
   level: string;
   badge: string;
   avatar: string;
+  /** Org-code department; only receivers carry it (used by HighlightSection filter). */
+  department?: string;
 }
 
 export interface KudosItem {
@@ -48,7 +50,7 @@ export const HIGHLIGHT_KUDOS: KudosItem[] = [
   {
     id: "hk-001",
     sender: { name: "Nguyễn Bá Chức", level: "CEVC10", badge: "New Hero", avatar: av(0) },
-    receiver: { name: "Đỗ Hoàng Hiệp", level: "CEVC8", badge: "Legend Hero", avatar: av(1) },
+    receiver: { name: "Đỗ Hoàng Hiệp", level: "CEVC8", badge: "Legend Hero", avatar: av(1), department: "Infra" },
     message:
       "Cảm ơn bạn đã luôn hỗ trợ team trong suốt sprint vừa qua. Nhờ sự tận tâm và chuyên nghiệp của bạn mà chúng ta hoàn thành dự án đúng hạn. Thật sự trân trọng tinh thần teamwork của bạn!",
     hashtags: ["#Dedicated", "#Teamwork"],
@@ -58,7 +60,7 @@ export const HIGHLIGHT_KUDOS: KudosItem[] = [
   {
     id: "hk-002",
     sender: { name: "Dương Thúy An", level: "CEVC7", badge: "Hero", avatar: av(2) },
-    receiver: { name: "Mai Phương Thúy", level: "CEVC9", badge: "New Hero", avatar: av(3) },
+    receiver: { name: "Mai Phương Thúy", level: "CEVC9", badge: "New Hero", avatar: av(3), department: "CEVC4" },
     message:
       "Bạn là nguồn cảm hứng lớn cho cả team. Cách bạn xử lý vấn đề kỹ thuật phức tạp và chia sẻ kiến thức thật tuyệt vời. Mình học được rất nhiều từ bạn mỗi ngày làm việc cùng nhau.",
     hashtags: ["#Inspiring", "#Mentor"],
@@ -68,7 +70,7 @@ export const HIGHLIGHT_KUDOS: KudosItem[] = [
   {
     id: "hk-003",
     sender: { name: "Lê Kiều Trang", level: "CEVC6", badge: "Hero", avatar: av(4) },
-    receiver: { name: "Nguyễn Hoàng Linh", level: "CEVC8", badge: "Legend Hero", avatar: av(5) },
+    receiver: { name: "Nguyễn Hoàng Linh", level: "CEVC8", badge: "Legend Hero", avatar: av(5), department: "CEVC2" },
     message:
       "Cảm ơn bạn đã luôn có mặt và hỗ trợ kịp thời mỗi khi team gặp khó khăn. Sự sáng tạo và khả năng giải quyết vấn đề của bạn thật đáng ngưỡng mộ. Rất vui được làm việc cùng bạn!",
     hashtags: ["#Creative", "#Inspiring"],
@@ -78,7 +80,7 @@ export const HIGHLIGHT_KUDOS: KudosItem[] = [
   {
     id: "hk-004",
     sender: { name: "Nguyễn Văn Quy", level: "CEVC5", badge: "New Hero", avatar: av(0) },
-    receiver: { name: "Nguyễn Bá Chức", level: "CEVC10", badge: "Legend Hero", avatar: av(1) },
+    receiver: { name: "Nguyễn Bá Chức", level: "CEVC10", badge: "Legend Hero", avatar: av(1), department: "CEVC3" },
     message:
       "Bạn đã hỗ trợ mình rất nhiều trong quá trình onboarding. Kiến thức sâu rộng và sự nhiệt tình của bạn giúp mình nhanh chóng hòa nhập vào dự án. Cảm ơn bạn rất nhiều!",
     hashtags: ["#Mentor", "#Dedicated"],
@@ -88,7 +90,7 @@ export const HIGHLIGHT_KUDOS: KudosItem[] = [
   {
     id: "hk-005",
     sender: { name: "Đỗ Hoàng Hiệp", level: "CEVC8", badge: "Hero", avatar: av(2) },
-    receiver: { name: "Dương Thúy An", level: "CEVC7", badge: "New Hero", avatar: av(3) },
+    receiver: { name: "Dương Thúy An", level: "CEVC7", badge: "New Hero", avatar: av(3), department: "CEVC2" },
     message:
       "Cảm ơn bạn vì đã luôn giữ tinh thần tích cực và truyền năng lượng tốt cho cả team. Phong cách làm việc chuyên nghiệp và sự tỉ mỉ trong từng task của bạn thực sự đáng học hỏi.",
     hashtags: ["#Teamwork", "#Creative"],

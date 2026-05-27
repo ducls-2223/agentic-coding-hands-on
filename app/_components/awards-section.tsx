@@ -1,4 +1,6 @@
 import { AwardCard, type AwardCardData } from "./award-card";
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
 const AWARDS: AwardCardData[] = [
   {
@@ -39,7 +41,8 @@ const AWARDS: AwardCardData[] = [
   },
 ];
 
-export function AwardsSection() {
+export async function AwardsSection() {
+  const lang = await getLanguage();
   return (
     <section className="w-full bg-[#0A0E1B] py-[96px]">
       <div className="mx-auto max-w-[1512px] px-[144px]">
@@ -47,11 +50,11 @@ export function AwardsSection() {
           {/* Section header */}
           <div className="flex flex-col gap-4">
             <p className="font-montserrat text-2xl font-bold leading-8 text-white">
-              Sun* annual awards 2025
+              {t(lang, "home.hero.eyebrow")}
             </p>
             <div className="h-px w-full bg-[#2E3940]" />
             <h2 className="font-montserrat text-[57px] font-bold leading-16 tracking-[-0.25px] text-[#FFEA9E]">
-              Hệ thống giải thưởng
+              {t(lang, "home.awards.heading")}
             </h2>
           </div>
 

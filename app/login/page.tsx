@@ -4,6 +4,8 @@ import GoogleLoginButton from "./_components/google-login-button";
 import LoginErrorBanner from "./_components/login-error-banner";
 import RootFurtherWordmark from "./_components/root-further-wordmark";
 import { loginWithGoogle } from "./actions";
+import { getLanguage } from "@/lib/i18n/server";
+import { t } from "@/lib/i18n/t";
 
 interface LoginPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -27,6 +29,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const errorCode =
     typeof params.error === "string" ? params.error : undefined;
+  const lang = await getLanguage();
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
@@ -73,9 +76,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               letterSpacing: "0.5px",
             }}
           >
-            Bắt đầu hành trình của bạn cùng SAA 2025.
-            <br />
-            Đăng nhập để khám phá!
+            {t(lang, "login.welcome.body")}
           </p>
 
           {/* Error banner — rendered when ?error=<code> is present in URL */}
@@ -91,7 +92,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       {/* Design node: mms_D_Footer > "Bản quyền thuộc về Sun* © 2025" */}
       <footer className="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center pb-6">
         <p className="text-xs text-white/50">
-          Bản quyền thuộc về Sun* © 2025
+          {t(lang, "footer.copyright_alt")}
         </p>
       </footer>
     </div>

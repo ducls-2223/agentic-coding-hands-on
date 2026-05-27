@@ -73,15 +73,15 @@ insert into public.kudos (
   )
 on conflict (id) do nothing;
 
-insert into public.kudos_recipients (kudos_id, name, level, badge, avatar) values
-  ('11111111-1111-1111-1111-000000000001', 'Lê Kiều Trang',     'CEVC6',  'Hero',         '/kudos/avatars/receiver.png'),
-  ('11111111-1111-1111-1111-000000000002', 'Nguyễn Văn Quy',    'CEVC5',  'Hero',         '/kudos/avatars/feed-2.png'),
-  ('11111111-1111-1111-1111-000000000003', 'Dương Thúy An',     'CEVC7',  'New Hero',     '/kudos/avatars/feed-4.png'),
-  ('11111111-1111-1111-1111-000000000004', 'Mai Phương Thúy',   'CEVC9',  'Legend Hero',  '/kudos/avatars/receiver.png'),
-  ('11111111-1111-1111-1111-000000000005', 'Nguyễn Bá Chức',    'CEVC10', 'Legend Hero',  '/kudos/avatars/feed-2.png'),
-  ('11111111-1111-1111-1111-000000000006', 'Nguyễn Hoàng Linh', 'CEVC8',  'New Hero',     '/kudos/avatars/feed-4.png'),
-  ('11111111-1111-1111-1111-000000000007', 'Đỗ Hoàng Hiệp',     'CEVC8',  'Hero',         '/kudos/avatars/receiver.png'),
-  ('11111111-1111-1111-1111-000000000008', 'Lê Kiều Trang',     'CEVC6',  'Hero',         '/kudos/avatars/feed-2.png')
+insert into public.kudos_recipients (kudos_id, name, level, badge, avatar, department) values
+  ('11111111-1111-1111-1111-000000000001', 'Lê Kiều Trang',     'CEVC6',  'Hero',         '/kudos/avatars/receiver.png', 'CEVC1'),
+  ('11111111-1111-1111-1111-000000000002', 'Nguyễn Văn Quy',    'CEVC5',  'Hero',         '/kudos/avatars/feed-2.png',   'OPD'),
+  ('11111111-1111-1111-1111-000000000003', 'Dương Thúy An',     'CEVC7',  'New Hero',     '/kudos/avatars/feed-4.png',   'CEVC2'),
+  ('11111111-1111-1111-1111-000000000004', 'Mai Phương Thúy',   'CEVC9',  'Legend Hero',  '/kudos/avatars/receiver.png', 'CEVC4'),
+  ('11111111-1111-1111-1111-000000000005', 'Nguyễn Bá Chức',    'CEVC10', 'Legend Hero',  '/kudos/avatars/feed-2.png',   'CEVC3'),
+  ('11111111-1111-1111-1111-000000000006', 'Nguyễn Hoàng Linh', 'CEVC8',  'New Hero',     '/kudos/avatars/feed-4.png',   'CEVC2'),
+  ('11111111-1111-1111-1111-000000000007', 'Đỗ Hoàng Hiệp',     'CEVC8',  'Hero',         '/kudos/avatars/receiver.png', 'Infra'),
+  ('11111111-1111-1111-1111-000000000008', 'Lê Kiều Trang',     'CEVC6',  'Hero',         '/kudos/avatars/feed-2.png',   'CEVC1')
 on conflict (kudos_id) do nothing;
 
 insert into public.kudos_hashtags (kudos_id, hashtag) values

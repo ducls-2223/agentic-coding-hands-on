@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { useTranslation } from "@/app/_components/use-translation";
 
 interface HashtagChipsProps {
   tags: string[];
@@ -16,6 +17,7 @@ export function HashtagChips({
   max = 5,
   disabled,
 }: HashtagChipsProps) {
+  const { t } = useTranslation();
   const [draft, setDraft] = useState("");
   const [editing, setEditing] = useState(false);
   // Enter triggers commit synchronously; the input then unmounts and React
@@ -57,7 +59,7 @@ export function HashtagChips({
             type="button"
             onClick={() => remove(tag)}
             disabled={disabled}
-            aria-label={`Xóa ${tag}`}
+            aria-label={t("kudos.dialog.remove_hashtag", { tag })}
             className="rounded-full p-0.5 hover:bg-[#998C5F]/10 disabled:opacity-50"
           >
             <Image
@@ -85,9 +87,9 @@ export function HashtagChips({
             height={12}
             aria-hidden="true"
           />
-          <span>Hashtag</span>
+          <span>{t("kudos.dialog.hashtag_button")}</span>
           <span className="text-xs font-medium text-[#998C5F]">
-            Tối đa {max}
+            {t("common.max")} {max}
           </span>
         </button>
       )}

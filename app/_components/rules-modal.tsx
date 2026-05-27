@@ -2,17 +2,19 @@
 
 import Image from "next/image";
 import { useEffect } from "react";
+import { useTranslation } from "./use-translation";
 
 interface RulesModalProps {
   onClose: () => void;
   onWriteKudos: () => void;
 }
 
-interface HeroTier {
+interface HeroTierConfig {
   src: string;
+  /** Proper noun — not translated */
   alt: string;
-  range: string;
-  description: string;
+  rangeKey: "rules.hero.new.range" | "rules.hero.rising.range" | "rules.hero.super.range" | "rules.hero.legend.range";
+  descKey: "rules.hero.new.description" | "rules.hero.rising.description" | "rules.hero.super.description" | "rules.hero.legend.description";
 }
 
 interface BadgeIcon {
@@ -20,34 +22,30 @@ interface BadgeIcon {
   name: string;
 }
 
-const HERO_TIERS: HeroTier[] = [
+const HERO_TIERS: HeroTierConfig[] = [
   {
     src: "/rules/hero-new.png",
     alt: "New Hero",
-    range: "Có 1-4 người gửi Kudos cho bạn",
-    description:
-      "Hành trình lan tỏa điều tốt đẹp bắt đầu – những lời cảm ơn và ghi nhận đầu tiên đã tìm đến bạn.",
+    rangeKey: "rules.hero.new.range",
+    descKey: "rules.hero.new.description",
   },
   {
     src: "/rules/hero-rising.png",
     alt: "Rising Hero",
-    range: "Có 5-9 người gửi Kudos cho bạn",
-    description:
-      "Hình ảnh bạn đang lớn dần trong trái tim đồng đội bằng sự tử tế và cống hiến của mình.",
+    rangeKey: "rules.hero.rising.range",
+    descKey: "rules.hero.rising.description",
   },
   {
     src: "/rules/hero-super.png",
     alt: "Super Hero",
-    range: "Có 10–20 người gửi Kudos cho bạn",
-    description:
-      "Bạn đã trở thành biểu tượng được tin tưởng và yêu quý, người luôn sẵn sàng hỗ trợ và được nhiều đồng đội nhớ đến.",
+    rangeKey: "rules.hero.super.range",
+    descKey: "rules.hero.super.description",
   },
   {
     src: "/rules/hero-legend.png",
     alt: "Legend Hero",
-    range: "Có hơn 20 người gửi Kudos cho bạn",
-    description:
-      "Bạn đã trở thành huyền thoại – người để lại dấu ấn khó quên trong tập thể bằng trái tim và hành động của mình.",
+    rangeKey: "rules.hero.legend.range",
+    descKey: "rules.hero.legend.description",
   },
 ];
 
@@ -61,6 +59,8 @@ const SECRET_BOX_BADGES: BadgeIcon[] = [
 ];
 
 export function RulesModal({ onClose, onWriteKudos }: RulesModalProps) {
+  const { t } = useTranslation();
+
   // Lock background scroll while the modal is open.
   useEffect(() => {
     const original = document.body.style.overflow;
@@ -75,7 +75,7 @@ export function RulesModal({ onClose, onWriteKudos }: RulesModalProps) {
       className="fixed inset-0 z-50 flex items-stretch justify-end"
       role="dialog"
       aria-modal="true"
-      aria-label="Thể lệ SAA 2025"
+      aria-label={t("rules.title")}
     >
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -86,16 +86,15 @@ export function RulesModal({ onClose, onWriteKudos }: RulesModalProps) {
       <div className="font-montserrat relative z-10 flex h-full w-full max-w-[640px] flex-col bg-[#00070C] shadow-2xl">
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto px-10 py-10">
-          <h2 className="mb-6 text-3xl font-bold text-[#FFEA9E]">Thể lệ</h2>
+          <h2 className="mb-6 text-3xl font-bold text-[#FFEA9E]">{t("rules.title")}</h2>
 
           {/* SECTION 1: Người nhận */}
           <section className="mb-8">
             <h3 className="mb-3 text-base font-bold uppercase leading-6 tracking-wide text-white">
-              Người nhận Kudos: Huy hiệu Hero cho những ảnh hưởng tích cực
+              {t("rules.receivers.heading")}
             </h3>
             <p className="mb-5 text-sm leading-6 text-white/80">
-              Dựa trên số lượng đồng đội gửi trao Kudos, bạn sẽ sở hữu Huy hiệu
-              Hero tương ứng, được hiển thị trực tiếp cạnh tên profile
+              {t("rules.receivers.intro")}
             </p>
 
             <ul className="space-y-4">
@@ -110,11 +109,11 @@ export function RulesModal({ onClose, onWriteKudos }: RulesModalProps) {
                       className="h-6 w-auto shrink-0"
                     />
                     <span className="text-sm font-bold text-white">
-                      {tier.range}
+                      {t(tier.rangeKey)}
                     </span>
                   </div>
                   <p className="text-sm leading-6 text-white/70">
-                    {tier.description}
+                    {t(tier.descKey)}
                   </p>
                 </li>
               ))}
@@ -124,13 +123,10 @@ export function RulesModal({ onClose, onWriteKudos }: RulesModalProps) {
           {/* SECTION 2: Người gửi */}
           <section className="mb-8">
             <h3 className="mb-3 text-base font-bold uppercase leading-6 tracking-wide text-white">
-              Người gửi Kudos: Sưu tập trọn bộ 6 icon, nhận ngay phần quà bí ẩn
+              {t("rules.senders.heading")}
             </h3>
             <p className="mb-6 text-sm leading-6 text-white/80">
-              Mỗi lời Kudos bạn gửi sẽ được đăng tải trên hệ thống và nhận về
-              những lượt ❤️ từ cộng đồng Sunner. Cứ mỗi 5 lượt ❤️, bạn sẽ được
-              mở 1 Secret Box, với cơ hội nhận về một trong 6 icon độc quyền của
-              SAA.
+              {t("rules.senders.intro")}
             </p>
 
             <div className="mb-6 grid grid-cols-3 gap-x-4 gap-y-6">
@@ -154,20 +150,17 @@ export function RulesModal({ onClose, onWriteKudos }: RulesModalProps) {
             </div>
 
             <p className="text-sm leading-6 text-white/80">
-              Những Sunner thu thập trọn bộ 6 icon sẽ nhận về một phần quà bí ẩn
-              từ SAA 2025.
+              {t("rules.senders.outro")}
             </p>
           </section>
 
           {/* SECTION 3: Quốc Dân */}
           <section>
             <h3 className="mb-3 text-base font-bold uppercase leading-6 tracking-wide text-white">
-              Kudos Quốc Dân
+              {t("rules.national.heading")}
             </h3>
             <p className="text-sm leading-6 text-white/80">
-              5 Kudos nhận về nhiều ❤️ nhất toàn Sun* sẽ chính thức trở thành
-              Kudos Quốc Dân và được trao phần quà đặc biệt từ SAA 2025: Root
-              Further.
+              {t("rules.national.body")}
             </p>
           </section>
         </div>
@@ -186,7 +179,7 @@ export function RulesModal({ onClose, onWriteKudos }: RulesModalProps) {
               height={16}
               aria-hidden="true"
             />
-            Đóng
+            {t("common.close")}
           </button>
           <button
             type="button"
@@ -200,7 +193,7 @@ export function RulesModal({ onClose, onWriteKudos }: RulesModalProps) {
               height={16}
               aria-hidden="true"
             />
-            Viết KUDOS
+            {t("fab.write_kudos")}
           </button>
         </div>
       </div>
