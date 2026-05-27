@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
 
+import { ArrowUpRightIcon } from "./arrow-up-right-icon";
 import { CountdownTimer } from "./countdown-timer";
 import { getLanguage } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/t";
@@ -44,7 +45,9 @@ export async function HeroSection() {
               <div className="flex flex-wrap items-center gap-4 lg:gap-15">
                 <span className="font-montserrat text-sm sm:text-base font-bold leading-8 text-white">
                   Thời gian:{" "}
-                  <span className="text-lg sm:text-2xl text-[#FFEA9E]">18h30</span>
+                  <span className="text-lg sm:text-2xl text-[#FFEA9E]">
+                    18h30
+                  </span>
                 </span>
                 <span className="font-montserrat text-sm sm:text-base font-bold leading-8 text-white">
                   Địa điểm:{" "}
@@ -59,31 +62,26 @@ export async function HeroSection() {
             </div>
           </div>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons. Arrow icon is inlined as SVG with `fill="currentColor"`
+              so its color inherits from the button's text-color — black/navy
+              on the yellow button, white on the dark-bordered button — instead
+              of being locked to a single fill from the static asset. */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 lg:gap-10">
             <Link
               href="/awards-information"
               className="flex h-15 items-center gap-2 rounded-lg bg-[#FFEA9E] px-6 py-4 font-montserrat text-sm sm:text-base font-bold text-[#00101A] hover:bg-[#f5de8a] active:bg-[#edd876] transition-colors duration-200"
             >
               {t(lang, "home.awards.cta")}
-              <Image
-                src="/home/icon-arrow-right.svg"
-                alt=""
-                width={24}
-                height={24}
-              />
+
+              <ArrowUpRightIcon />
             </Link>
             <Link
               href="/sun-kudos"
               className="flex h-15 items-center gap-2 rounded-lg border border-[#998C5F] bg-[rgba(255,234,158,0.10)] px-6 py-4 font-montserrat text-sm sm:text-base font-bold text-white hover:bg-[rgba(255,234,158,0.20)] active:bg-[rgba(255,234,158,0.30)] transition-colors duration-200"
             >
               {t(lang, "home.kudos.cta")}
-              <Image
-                src="/home/icon-arrow-right.svg"
-                alt=""
-                width={24}
-                height={24}
-              />
+
+              <ArrowUpRightIcon />
             </Link>
           </div>
         </div>

@@ -21,10 +21,10 @@ interface GoogleLoginButtonProps {
 export default async function GoogleLoginButton({ action }: GoogleLoginButtonProps) {
   const lang = await getLanguage();
   return (
-    <form action={action} className="w-full max-w-[305px]">
+    <form action={action} className="w-full max-w-[360px]">
       <button
         type="submit"
-        className="flex w-full items-center justify-between gap-2 rounded-lg px-6 py-4 font-bold text-[#00101A] shadow-md transition-all duration-200 hover:brightness-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFEA9E]/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+        className="flex w-full items-center justify-between gap-3 rounded-lg px-6 py-4 font-bold text-[#00101A] shadow-md transition-all duration-200 hover:brightness-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFEA9E]/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
         style={{
           backgroundColor: "#FFEA9E",
           height: "60px",
@@ -32,19 +32,24 @@ export default async function GoogleLoginButton({ action }: GoogleLoginButtonPro
           padding: "16px 24px",
         }}
       >
-        {/* Text: left side — Montserrat Bold 22px per design node I662:14426;186:1568 */}
+        {/* Text: left side — Montserrat Bold 22px per design node I662:14426;186:1568.
+            `whitespace-nowrap` keeps "LOGIN With Google" on a single line so the
+            icon stays vertically centered to the right rather than being pushed
+            below by a wrap. */}
         <span
-          className="font-montserrat shrink-0 font-bold leading-7 tracking-normal"
+          className="font-montserrat shrink-0 whitespace-nowrap font-bold leading-7 tracking-normal"
           style={{ fontSize: "22px" }}
         >
           {t(lang, "login.google_button")}
         </span>
-        {/* Google G icon: right side — 24×24 per design node I662:14426;186:1766 */}
+        {/* Google G icon: right side — sized to match the design's visual weight
+            (~32px) rather than the spec's 24px which renders too small against
+            22px text. */}
         <Image
           src="/login/google-g.svg"
           alt=""
-          width={24}
-          height={24}
+          width={32}
+          height={32}
           aria-hidden="true"
           className="shrink-0"
         />

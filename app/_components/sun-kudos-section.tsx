@@ -2,13 +2,18 @@ import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
 import { getLanguage } from "@/lib/i18n/server";
 import { t } from "@/lib/i18n/t";
+import { ArrowUpRightIcon } from "./arrow-up-right-icon";
 
 export async function SunKudosSection() {
   const lang = await getLanguage();
+
   return (
     <section className="w-full bg-[#0A0E1B] py-[96px]">
       <div className="mx-auto max-w-[1512px] px-[144px]">
-        <div className="relative w-full max-w-[1224px] mx-auto overflow-hidden rounded-2xl" style={{ height: 500 }}>
+        <div
+          className="relative w-full max-w-[1224px] mx-auto overflow-hidden rounded-2xl"
+          style={{ height: 500 }}
+        >
           {/* Background image */}
           <Image
             src="/home/kudos-bg.png"
@@ -41,12 +46,8 @@ export async function SunKudosSection() {
                 className="flex w-fit items-center gap-2 rounded bg-[#FFEA9E] px-4 py-4 font-montserrat text-base font-bold text-[#00101A] hover:bg-[#f5de8a] transition-colors"
               >
                 {t(lang, "home.kudos.cta")}
-                <Image
-                  src="/home/icon-arrow-right.svg"
-                  alt=""
-                  width={24}
-                  height={24}
-                />
+
+                <ArrowUpRightIcon />
               </Link>
             </div>
 
