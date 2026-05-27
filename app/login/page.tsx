@@ -27,8 +27,7 @@ interface LoginPageProps {
  */
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
-  const errorCode =
-    typeof params.error === "string" ? params.error : undefined;
+  const errorCode = typeof params.error === "string" ? params.error : undefined;
   const lang = await getLanguage();
 
   return (
@@ -37,10 +36,20 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       <LoginHeader />
 
       {/* ── Background layer (absolute, z-0) ── */}
-      {/* Full-frame Figma render: bg-keyvisual.png.
-          Gradient mask: solid dark on left (hides baked-in hero text in PNG),
-          fades to transparent on right (preserves artwork). */}
-      <div className="absolute inset-0 z-0" aria-hidden="true">
+      {/* Composition matching the Figma design:
+          1. Outer wrapper paints solid `#0A0E1B` across the whole viewport.
+          2. The artwork-only PNG (bg-keyvisual.png, 1440×547 — aspect 2.63:1,
+             NO baked-in UI). The PNG already contains a dark-navy left edge
+             that blends with the wrapper, with the colorful swirls
+             concentrated on the right ~60%.
+          3. `object-contain` keeps the PNG at its natural aspect ratio —
+             never stretched, never aggressively cropped — letterboxed top
+             and bottom with the dark wrapper showing through. This matches
+             the Figma frame where the artwork sits as a horizontal band in
+             the vertical center, surrounded by solid dark navy.
+          4. A subtle left-side gradient softens any visible seam where the
+             PNG's left edge meets the wrapper. */}
+      <div className="absolute inset-0 z-0 bg-[#0A0E1B]" aria-hidden="true">
         <Image
           src="/login/bg-keyvisual.png"
           alt=""
@@ -49,11 +58,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           sizes="100vw"
           className="object-cover object-right"
         />
-        {/* DO NOT REMOVE — masks the baked-in Figma UI (ROOT FURTHER text + button
-            + footer) inside bg-keyvisual.png. Without this gradient those elements
-            ghost through behind the overlay components on the left half of the
-            viewport. */}
-        <div className="absolute inset-0 bg-linear-to-r from-[#0A0E1B]/95 from-30% via-[#0A0E1B]/60 via-55% to-transparent to-75%" />
+        {/* Design composition: artwork dominates the right side and extends
+            top-to-bottom; the left ~45% stays solid dark for ROOT FURTHER +
+            welcome copy + LOGIN button contrast. The mask holds opaque navy
+            over 0–30%, fades through 30–55%, and lets the colorful right
+            half show crisp from 55% onward. */}
+        <div className="absolute inset-0 bg-linear-to-r from-[#0A0E1B] from-0% via-[#0A0E1B]/80 via-30% to-transparent to-55%" />
       </div>
 
       {/* ── Main content (z-10, full-height, left-aligned) ── */}
@@ -61,7 +71,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           On mobile: centered layout for narrower viewports. */}
       <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 md:items-start md:px-[10vw] lg:px-36">
         <div className="flex w-full max-w-sm flex-col items-center gap-6 text-center md:max-w-none md:items-start md:text-left">
-
           {/* ROOT FURTHER key visual — mms_B.1_Key Visual (2939:9548).
               Design container: 1152px wide. Scale generously on desktop. */}
           <RootFurtherWordmark />
