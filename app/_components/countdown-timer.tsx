@@ -1,14 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-const FALLBACK_DATE = "2025-12-31T18:30:00+07:00";
-
-function resolveTargetTime(): number {
-  const raw = process.env.NEXT_PUBLIC_EVENT_START_DATETIME ?? FALLBACK_DATE;
-  const d = new Date(raw);
-  return isNaN(d.getTime()) ? new Date(FALLBACK_DATE).getTime() : d.getTime();
-}
+import { resolveEventStartMs } from "@/lib/event-time";
 
 interface TimeLeft {
   days: number;
@@ -58,18 +52,29 @@ function UnitBlock({ value, label }: { value: number; label: string }) {
   );
 }
 
+interface CountdownTimerProps {
+  /** Heading rendered above the digit blocks while time remains. */
+  title?: string;
+  /** Fires once when the countdown first reaches 00:00:00. */
+  onComplete?: () => void;
+}
+
 /**
  * Live countdown to the SAA event start time. Reads
- * `NEXT_PUBLIC_EVENT_START_DATETIME` (ISO-8601) at module load, falling back
- * to 2025-12-31T18:30:00+07:00. Ticks once per minute.
+ * `NEXT_PUBLIC_EVENT_START_DATETIME` (ISO-8601) via `resolveEventStartMs()`,
+ * falling back to 2025-12-31T18:30:00+07:00. Ticks once per minute.
  *
  * Render strategy: initial render returns a skeleton (timeLeft === null) so
  * server HTML matches client HTML. The effect runs once on mount to compute
  * real values from the client clock and starts the interval.
  */
-export function CountdownTimer() {
-  const targetMs = useMemo(() => resolveTargetTime(), []);
+export function CountdownTimer({
+  title = "Coming soon",
+  onComplete,
+}: CountdownTimerProps = {}) {
+  const targetMs = useMemo(() => resolveEventStartMs(), []);
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
+  const completeFiredRef = useRef(false);
 
   useEffect(() => {
     // queueMicrotask defers the first setState off the synchronous effect
@@ -82,6 +87,15 @@ export function CountdownTimer() {
     }, 60_000);
     return () => clearInterval(id);
   }, [targetMs]);
+
+  // Fire onComplete exactly once when the clock hits zero.
+  useEffect(() => {
+    if (!timeLeft || !onComplete || completeFiredRef.current) return;
+    if (timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0) {
+      completeFiredRef.current = true;
+      onComplete();
+    }
+  }, [timeLeft, onComplete]);
 
   if (timeLeft === null) {
     return (
@@ -103,7 +117,7 @@ export function CountdownTimer() {
     <div className="flex flex-col gap-4">
       {!isOver && (
         <p className="font-montserrat text-2xl font-bold leading-8 text-white">
-          Coming soon
+          {title}
         </p>
       )}
       <div className="flex items-start gap-10">

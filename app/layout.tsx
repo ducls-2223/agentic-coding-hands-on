@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Montserrat } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { FloatingActionWidget } from "./_components/floating-action-widget";
@@ -31,9 +32,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const [
+    {
+      data: { user },
+    },
+    headerList,
+  ] = await Promise.all([supabase.auth.getUser(), headers()]);
+
+  // Hide the FAB on /prelaunch — proxy.ts injects the request pathname so the
+  // layout can vary chrome without re-deriving it from the URL.
+  const pathname = headerList.get("x-pathname") ?? "";
+  const showWidget = user && pathname !== "/prelaunch";
 
   return (
     <html
@@ -42,7 +51,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         {children}
-        {user && <FloatingActionWidget />}
+        {showWidget && <FloatingActionWidget />}
       </body>
     </html>
   );
