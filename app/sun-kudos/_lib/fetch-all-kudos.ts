@@ -9,6 +9,7 @@ interface KudosRecipientRow {
   level: string;
   badge: string;
   avatar: string | null;
+  department: string | null;
 }
 
 interface KudosHashtagRow {
@@ -42,7 +43,7 @@ export async function fetchAllKudos(lang: Language): Promise<KudosItem[]> {
   const { data, error } = await supabase
     .from("kudos")
     .select(
-      "id, content, created_at, author_name, author_avatar, author_level, author_badge, images, kudos_recipients!inner(name, level, badge, avatar), kudos_hashtags(hashtag)",
+      "id, content, created_at, author_name, author_avatar, author_level, author_badge, images, kudos_recipients!inner(name, level, badge, avatar, department), kudos_hashtags(hashtag)",
     )
     .order("created_at", { ascending: false })
     .limit(50);
@@ -72,6 +73,7 @@ export async function fetchAllKudos(lang: Language): Promise<KudosItem[]> {
           level: recipient.level,
           badge: recipient.badge,
           avatar: recipient.avatar ?? FALLBACK_AVATAR,
+          department: recipient.department ?? undefined,
         },
         message: row.content,
         hashtags: (row.kudos_hashtags ?? []).map((h) => h.hashtag),
