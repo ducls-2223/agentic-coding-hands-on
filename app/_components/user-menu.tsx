@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
 import type { User } from "@supabase/supabase-js";
 
 interface UserMenuProps {

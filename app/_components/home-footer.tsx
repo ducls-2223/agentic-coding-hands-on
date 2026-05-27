@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
 
 interface FooterProps {
   /** Pathname of the current route; used to highlight the active footer link. */

@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 import { resolveEventStartMs } from "@/lib/event-time";
+import { DEFAULT_LANGUAGE, LANGUAGE_PARAM, isLanguage } from "@/lib/i18n";
 import { getSupabaseEnv } from "./env";
 
 const PRELAUNCH_PATH = "/prelaunch";
@@ -25,11 +26,15 @@ export async function updateSupabaseSession(request: NextRequest) {
   const beforeEvent = Date.now() < resolveEventStartMs();
   const isPrelaunchRoute = pathname === PRELAUNCH_PATH;
 
-  // Expose the current pathname to the root layout so it can vary chrome
-  // (e.g. hide the FAB on /prelaunch). Next does not provide pathname in
-  // `headers()` by default — proxies must inject it themselves.
+  // Expose the current pathname + language to the root layout. Next does not
+  // provide either in `headers()` by default — proxies must inject them.
+  // - x-pathname lets the layout vary chrome (e.g. hide the FAB on /prelaunch).
+  // - x-lang carries the URL `?lang=` value so server components can resolve
+  //   the active language without prop-drilling searchParams.
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", pathname);
+  const rawLang = request.nextUrl.searchParams.get(LANGUAGE_PARAM);
+  requestHeaders.set("x-lang", isLanguage(rawLang) ? rawLang : DEFAULT_LANGUAGE);
   const requestInit = { request: { headers: requestHeaders } };
 
   // Pre-event gate: bypass auth entirely and force everyone to /prelaunch.
@@ -114,6 +119,13 @@ function buildRedirect(
 function buildRedirectUrl(request: NextRequest, pathname: string): URL {
   const url = request.nextUrl.clone();
   url.pathname = pathname;
+  // Preserve the language choice across auth redirects (e.g. /?lang=en →
+  // /login should land on /login?lang=en). Drop everything else to avoid
+  // leaking error/state params across routes.
+  const lang = url.searchParams.get(LANGUAGE_PARAM);
   url.search = "";
+  if (lang && isLanguage(lang) && lang !== DEFAULT_LANGUAGE) {
+    url.searchParams.set(LANGUAGE_PARAM, lang);
+  }
   return url;
 }

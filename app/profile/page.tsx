@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocalizedLink as Link } from "@/app/_components/localized-link";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 

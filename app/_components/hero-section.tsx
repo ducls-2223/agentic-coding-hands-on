@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
 
 import { CountdownTimer } from "./countdown-timer";
 
