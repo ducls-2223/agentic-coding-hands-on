@@ -28,6 +28,11 @@ yarn-error.log*
 # IDE
 .idea/
 
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
 # MoMorph / MCP
 .mcp.json
 mcp.json
@@ -46,3 +51,10 @@ next-env.d.ts
 !.dev.vars.example
 yarn.lock
 package-lock.json
+
+# E2E Playwright plan exceptions (to plans/**/* rule)
+!plans/
+!plans/260528-1420-e2e-playwright/
+!plans/260528-1420-e2e-playwright/**/*
+!plans/reports/
+!plans/reports/reviewer-260528-1420-e2e-playwright.md
