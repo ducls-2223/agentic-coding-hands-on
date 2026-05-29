@@ -74,6 +74,25 @@ describe("FloatingActionWidget", () => {
     expect(screen.queryByTestId("RulesModal")).not.toBeInTheDocument();
   });
 
+
+  it("Rules modal -> Write Kudos transitions to the dialog mode", () => {
+    render(<FloatingActionWidget />);
+    fireEvent.click(screen.getByRole("button", { name: "fab.open_menu" }));
+    fireEvent.click(screen.getByText("fab.rules"));
+    fireEvent.click(screen.getByTestId("rules-write"));
+    expect(screen.getByTestId("KudosWriteDialog")).toBeInTheDocument();
+    expect(screen.queryByTestId("RulesModal")).not.toBeInTheDocument();
+  });
+
+  it("Dialog onClose collapses without firing the toast", () => {
+    render(<FloatingActionWidget />);
+    fireEvent.click(screen.getByRole("button", { name: "fab.open_menu" }));
+    fireEvent.click(screen.getByText("fab.write_kudos"));
+    fireEvent.click(screen.getByTestId("dialog-close"));
+    expect(screen.queryByTestId("KudosWriteDialog")).not.toBeInTheDocument();
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  });
+
   it("dialog-success triggers the toast and collapses", () => {
     render(<FloatingActionWidget />);
     fireEvent.click(screen.getByRole("button", { name: "fab.open_menu" }));
