@@ -167,22 +167,11 @@ describe("createKudos action (new API)", () => {
     errSpy.mockRestore();
   });
 
-<<<<<<< HEAD
-  it("returns error when getUser fails", async () => {
-    getUser.mockResolvedValue({
-      data: { user: null },
-      error: { message: "x" },
-    });
-    const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
-    const res = await createKudos(null, fd("hi"));
-=======
   it("rejects when content type is not a string", async () => {
     const f = fd();
     f.delete("content");
     // FormData.get returns null when key missing → action's typeof check returns false.
     const res = await createKudos(null, f);
->>>>>>> 9af2d3d (test(app): restore + extend vitest suite to >=90% coverage)
     expect(res.ok).toBe(false);
   });
 
@@ -204,15 +193,6 @@ describe("createKudos action (new API)", () => {
     errSpy.mockRestore();
   });
 
-<<<<<<< HEAD
-    const res = await createKudos(null, fd("Thanks!"));
-    expect(res).toEqual({ ok: true });
-    expect(insert).toHaveBeenCalledWith({
-      author_id: "u1",
-      content: "Thanks!",
-    });
-    expect(revalidatePath).toHaveBeenCalledWith("/sun-kudos");
-=======
   it("returns field error when hashtag has invalid (whitespace-only) value", async () => {
     const res = await createKudos(null, fd({ hashtags: JSON.stringify(["   "]) }));
     expect(res.ok).toBe(false);
@@ -234,6 +214,5 @@ describe("createKudos action (new API)", () => {
     ];
     const res = await createKudos(null, fd({ images: JSON.stringify(valid) }));
     expect(res.ok).toBe(true);
->>>>>>> 9af2d3d (test(app): restore + extend vitest suite to >=90% coverage)
   });
 });

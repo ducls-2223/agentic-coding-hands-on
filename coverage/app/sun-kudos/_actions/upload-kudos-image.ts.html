@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.39% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>4/23</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.39% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>4/23</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -157,39 +157,39 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use server";
 &nbsp;
@@ -218,42 +218,42 @@ const ALLOWED_EXT: Record&lt;string, string&gt; = {
  * Validates mime type + size server-side; the client UI does the same checks
  * for fast feedback but never trust the browser.
  */
-export async function <span class="fstat-no" title="function not covered" >uploadKudosImage(</span>
+export async function uploadKudosImage(
   formData: FormData,
 ): Promise&lt;UploadKudosImageResult&gt; {
-  const file = <span class="cstat-no" title="statement not covered" >formData.get("file");</span>
-<span class="cstat-no" title="statement not covered" >  if (!(file instanceof File)) {</span>
-<span class="cstat-no" title="statement not covered" >    return { ok: false, error: "File không hợp lệ." };</span>
+  const file = formData.get("file");
+  if (!(file instanceof File)) {
+    return { ok: false, error: "File không hợp lệ." };
   }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (!ALLOWED_MIME.has(file.type)) {</span>
-<span class="cstat-no" title="statement not covered" >    return { ok: false, error: "Chỉ chấp nhận ảnh JPG hoặc PNG." };</span>
+  if (!ALLOWED_MIME.has(file.type)) {
+    return { ok: false, error: "Chỉ chấp nhận ảnh JPG hoặc PNG." };
   }
-<span class="cstat-no" title="statement not covered" >  if (file.size &gt; MAX_BYTES) {</span>
-<span class="cstat-no" title="statement not covered" >    return { ok: false, error: "Ảnh vượt quá 5MB." };</span>
-  }
-&nbsp;
-  const supabase = <span class="cstat-no" title="statement not covered" >await createSupabaseServerClient();</span>
-  const { data: userData, error: getUserError } = <span class="cstat-no" title="statement not covered" >await supabase.auth.getUser();</span>
-<span class="cstat-no" title="statement not covered" >  if (getUserError || !userData.user) {</span>
-<span class="cstat-no" title="statement not covered" >    return { ok: false, error: "Bạn cần đăng nhập để tải ảnh." };</span>
+  if (file.size &gt; MAX_BYTES) {
+    return { ok: false, error: "Ảnh vượt quá 5MB." };
   }
 &nbsp;
-  const ext = <span class="cstat-no" title="statement not covered" >ALLOWED_EXT[file.type];</span>
-  const path = <span class="cstat-no" title="statement not covered" >`${userData.user.id}/${crypto.randomUUID()}.${ext}`;</span>
+  const supabase = await createSupabaseServerClient();
+  const { data: userData, error: getUserError } = await supabase.auth.getUser();
+  if (getUserError || !userData.user) {
+    return { ok: false, error: "Bạn cần đăng nhập để tải ảnh." };
+  }
 &nbsp;
-  const { error: uploadError } = <span class="cstat-no" title="statement not covered" >await supabase.storage</span>
+  const ext = ALLOWED_EXT[file.type];
+  const path = `${userData.user.id}/${crypto.randomUUID()}.${ext}`;
+&nbsp;
+  const { error: uploadError } = await supabase.storage
     .from("kudos-images")
     .upload(path, file, { contentType: file.type, upsert: false });
-<span class="cstat-no" title="statement not covered" >  if (uploadError) {</span>
-<span class="cstat-no" title="statement not covered" >    console.error("[uploadKudosImage] upload failed:", uploadError.message);</span>
-<span class="cstat-no" title="statement not covered" >    return { ok: false, error: "Không thể tải ảnh. Vui lòng thử lại." };</span>
+  if (uploadError) {
+    console.error("[uploadKudosImage] upload failed:", uploadError.message);
+    return { ok: false, error: "Không thể tải ảnh. Vui lòng thử lại." };
   }
 &nbsp;
-  const { data: publicUrl } = <span class="cstat-no" title="statement not covered" >supabase.storage</span>
+  const { data: publicUrl } = supabase.storage
     .from("kudos-images")
     .getPublicUrl(path);
-<span class="cstat-no" title="statement not covered" >  return { ok: true, url: publicUrl.publicUrl };</span>
+  return { ok: true, url: publicUrl.publicUrl };
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -262,7 +262,7 @@ export async function <span class="fstat-no" title="function not covered" >uploa
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-30T04:39:57.551Z
+                at 2026-05-30T04:56:30.176Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

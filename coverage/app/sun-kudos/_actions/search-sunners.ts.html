@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">7.69% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/13</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>6/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">8.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -96,7 +96,7 @@
 <a name='L31'></a><a href='#L31'>31</a>
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -107,27 +107,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use server";
 &nbsp;
@@ -139,28 +139,28 @@ import type { Sunner } from "../_lib/fetch-sunners";
  * Trims whitespace and ignores non-letter junk (matches GUI spec test ID-9/10).
  * Returns at most `limit` rows. Empty/short query → top alphabetical slice.
  */
-export async function <span class="fstat-no" title="function not covered" >searchSunners(q</span>uery: string, limit = <span class="branch-0 cbranch-no" title="branch not covered" >10): Promise&lt;Sunner[]&gt; {</span>
-  const supabase = <span class="cstat-no" title="statement not covered" >await createSupabaseServerClient();</span>
-  const trimmed = <span class="cstat-no" title="statement not covered" >query.trim();</span>
+export async function searchSunners(query: string, limit = 10): Promise&lt;Sunner[]&gt; {
+  const supabase = await createSupabaseServerClient();
+  const trimmed = query.trim();
 &nbsp;
-  let builder = <span class="cstat-no" title="statement not covered" >supabase</span>
+  let builder = supabase
     .from("sunners")
     .select("id, name, level, badge, avatar, department")
     .order("name", { ascending: true })
     .limit(limit);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (trimmed.length &gt; 0) {</span>
+  if (trimmed.length &gt; 0) {
     // ilike escapes %/_ → escape any caller-provided wildcards.
-    const safe = <span class="cstat-no" title="statement not covered" >trimmed.replace(<span class="fstat-no" title="function not covered" >/[%_\\]/g, (m</span>) =&gt; <span class="cstat-no" title="statement not covered" >`\\${m}`)</span>;</span>
-<span class="cstat-no" title="statement not covered" >    builder = builder.ilike("name", `%${safe}%`);</span>
+    const safe = trimmed.replace(/[%_\\]/g, (m) =&gt; `\\${m}`);
+    builder = builder.ilike("name", `%${safe}%`);
   }
 &nbsp;
-  const { data, error } = <span class="cstat-no" title="statement not covered" >await builder;</span>
-<span class="cstat-no" title="statement not covered" >  if (error) {</span>
-<span class="cstat-no" title="statement not covered" >    console.error("[searchSunners] failed:", error.message);</span>
-<span class="cstat-no" title="statement not covered" >    return [];</span>
+  const { data, error } = await builder;
+  if (error) {
+    console.error("[searchSunners] failed:", error.message);
+    return [];
   }
-<span class="cstat-no" title="statement not covered" >  return (data ?? []) as Sunner[];</span>
+  return (data ?? <span class="branch-1 cbranch-no" title="branch not covered" >[]) as Sunner[];</span>
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -169,7 +169,7 @@ export async function <span class="fstat-no" title="function not covered" >searc
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-30T04:39:57.551Z
+                at 2026-05-30T04:56:30.176Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
