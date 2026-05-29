@@ -111,6 +111,7 @@ export function KudosCard({ item, variant = "feed" }: KudosCardProps) {
       <KudosActionBar
         kudosId={item.id}
         initialLikes={item.likes}
+        initialLiked={item.likedByMe ?? false}
         showViewDetails={variant === "highlight"}
       />
     </article>

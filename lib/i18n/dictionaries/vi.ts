@@ -161,6 +161,7 @@ export const VI = {
   "sun_kudos.card.next": "Trang tiếp",
   "sun_kudos.card.like": "Thả tim",
   "sun_kudos.card.unlike": "Bỏ tim",
+  "sun_kudos.card.like_failed": "Không thể cập nhật lượt thích. Vui lòng thử lại.",
   "sun_kudos.card.copy_link": "Sao chép liên kết",
 
   // Home page

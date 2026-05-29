@@ -166,6 +166,7 @@ export const EN: Partial<Record<keyof ViDictionary, string>> = {
   "sun_kudos.card.next": "Next",
   "sun_kudos.card.like": "Like",
   "sun_kudos.card.unlike": "Unlike",
+  "sun_kudos.card.like_failed": "Could not update your like. Please try again.",
   "sun_kudos.card.copy_link": "Copy link",
 
   // Home page

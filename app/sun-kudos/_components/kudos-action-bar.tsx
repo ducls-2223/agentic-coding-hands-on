@@ -1,12 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useTranslation } from "@/app/_components/use-translation";
+import { toggleKudosLike } from "../_actions/toggle-kudos-like";
 
 interface KudosActionBarProps {
   kudosId: string;
   initialLikes: number;
+  /** Current viewer's persisted like state for this kudos. */
+  initialLiked?: boolean;
   showViewDetails?: boolean;
 }
 
@@ -19,12 +22,14 @@ interface KudosActionBarProps {
 export function KudosActionBar({
   kudosId,
   initialLikes,
+  initialLiked = false,
   showViewDetails = false,
 }: KudosActionBarProps) {
   const { t } = useTranslation();
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(initialLiked);
   const [count, setCount] = useState(initialLikes);
   const [toast, setToast] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -40,9 +45,26 @@ export function KudosActionBar({
   }
 
   function toggleLike() {
-    const next = !liked;
-    setLiked(next);
-    setCount((c) => c + (next ? 1 : -1));
+    if (pending) return;
+    const nextLiked = !liked;
+    // Optimistic flip — UI responds immediately. The server action then
+    // reconciles to the authoritative count from the trigger-backed counter.
+    setLiked(nextLiked);
+    setCount((c) => Math.max(0, c + (nextLiked ? 1 : -1)));
+    startTransition(async () => {
+      const res = await toggleKudosLike(kudosId);
+      if (!res.ok) {
+        // Rollback the optimistic change and surface the error.
+        setLiked(!nextLiked);
+        setCount((c) => Math.max(0, c + (nextLiked ? -1 : 1)));
+        showToast(res.error ?? t("sun_kudos.card.like_failed"));
+        return;
+      }
+      // Reconcile with server truth so concurrent likes from other tabs
+      // converge to the same count.
+      if (typeof res.liked === "boolean") setLiked(res.liked);
+      if (typeof res.count === "number") setCount(res.count);
+    });
   }
 
   async function copyLink() {
