@@ -10,7 +10,10 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
  */
 export async function signOut() {
   const supabase = await createSupabaseServerClient();
-  await supabase.auth.signOut();
+  // scope: "local" clears only this browser's session. The default ("global")
+  // revokes the refresh token for every device, which is hostile if the user
+  // is signed in on phone + desktop and only meant to log out of this tab.
+  await supabase.auth.signOut({ scope: "local" });
 
   // redirect() throws NEXT_REDIRECT — let it propagate, do not wrap.
   redirect("/login");
