@@ -4,6 +4,14 @@ import Image from "next/image";
 import { KudosItem } from "../_data/kudos-mock";
 import { KudosActionBar } from "./kudos-action-bar";
 import { useTranslation } from "@/app/_components/use-translation";
+import { sanitizeKudosHtml } from "@/lib/sanitize-kudos-html";
+
+// Treat the message as HTML if it contains a tag — preserves Tiptap-authored
+// content (bold, italic, mentions, etc.) while still rendering legacy plain-
+// text mock messages safely.
+function isLikelyHtml(message: string): boolean {
+  return /<[a-z][\s\S]*?>/i.test(message);
+}
 
 interface KudosCardProps {
   item: KudosItem;
@@ -51,10 +59,18 @@ export function KudosCard({ item, variant = "feed" }: KudosCardProps) {
           {item.timestamp}
         </p>
 
-        {/* Message */}
-        <p className="font-montserrat text-sm font-medium leading-6 text-[#00101A] line-clamp-5">
-          {item.message}
-        </p>
+        {/* Message — renders Tiptap-authored HTML when present, falling back to
+            plain text for the existing seeded mock rows. Always sanitized. */}
+        {isLikelyHtml(item.message) ? (
+          <div
+            className="kudos-message font-montserrat text-sm font-medium leading-6 text-[#00101A] line-clamp-5"
+            dangerouslySetInnerHTML={{ __html: sanitizeKudosHtml(item.message) }}
+          />
+        ) : (
+          <p className="font-montserrat text-sm font-medium leading-6 text-[#00101A] line-clamp-5">
+            {item.message}
+          </p>
+        )}
 
         {/* Hashtags */}
         <div className="flex flex-wrap gap-2">

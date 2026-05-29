@@ -12,13 +12,29 @@ import { EditorToolbar } from "@/app/sun-kudos/_components/editor-toolbar";
 
 describe("EditorToolbar", () => {
   it("renders six format buttons plus the community link", () => {
-    render(<EditorToolbar />);
-    expect(screen.getByRole("button", { name: "kudos.editor.bold" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "kudos.editor.italic" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "kudos.editor.strikethrough" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "kudos.editor.numbered_list" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "kudos.editor.link" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "kudos.editor.quote" })).toBeInTheDocument();
-    expect(screen.getByText("kudos.editor.community_guidelines")).toBeInTheDocument();
+    // Disabled state: passing null editor — every toolbar button shows as
+    // disabled but the labels + community link are still asserted.
+    render(<EditorToolbar editor={null} />);
+    expect(
+      screen.getByRole("button", { name: "kudos.editor.bold" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "kudos.editor.italic" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "kudos.editor.strikethrough" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "kudos.editor.numbered_list" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "kudos.editor.link" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "kudos.editor.quote" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("kudos.editor.community_guidelines"),
+    ).toBeInTheDocument();
   });
 });
