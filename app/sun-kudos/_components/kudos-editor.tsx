@@ -4,6 +4,7 @@ import { EditorContent, ReactRenderer, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Mention from "@tiptap/extension-mention";
+import Placeholder from "@tiptap/extension-placeholder";
 import tippy, { type Instance as TippyInstance } from "tippy.js";
 import { useEffect, useImperativeHandle, forwardRef } from "react";
 
@@ -102,13 +103,15 @@ export const KudosEditor = forwardRef<KudosEditorHandle, KudosEditorProps>(
             },
           },
         }),
+        Placeholder.configure({
+          placeholder: t("kudos.dialog.content_placeholder"),
+        }),
       ],
       content: "",
       editorProps: {
         attributes: {
           class:
-            "prose prose-sm max-w-none font-montserrat min-h-[180px] w-full bg-transparent px-4 py-3 text-base text-[#00101A] focus:outline-none",
-          "data-placeholder": t("kudos.dialog.content_placeholder"),
+            "kudos-prose font-montserrat min-h-[180px] w-full bg-transparent px-4 py-3 text-base text-[#00101A] focus:outline-none",
         },
       },
       immediatelyRender: false,

@@ -36,6 +36,20 @@ vi.mock("@tiptap/extension-mention", () => ({
     },
   },
 }));
+// Capture the Placeholder.configure call so the test can assert the placeholder
+// text is wired (regression guard: the editor previously had no Placeholder
+// extension at all, so the design's placeholder never rendered).
+const placeholderConfig: { current: { placeholder?: string } | null } = {
+  current: null,
+};
+vi.mock("@tiptap/extension-placeholder", () => ({
+  default: {
+    configure: (cfg: { placeholder?: string }) => {
+      placeholderConfig.current = cfg;
+      return {};
+    },
+  },
+}));
 vi.mock("tippy.js", () => ({ default: vi.fn(() => ({ setProps: vi.fn(), hide: vi.fn(), destroy: vi.fn() })) }));
 vi.mock("@/app/sun-kudos/_actions/search-sunners", () => ({
   searchSunners: vi.fn(async () => []),
@@ -58,6 +72,15 @@ describe("KudosEditor (smoke)", () => {
     render(<KudosEditor />);
     expect(screen.getByTestId("EditorContent")).toBeInTheDocument();
     expect(screen.getByTestId("EditorToolbar")).toBeInTheDocument();
+  });
+
+  it("wires the Placeholder extension with the design's placeholder text", () => {
+    placeholderConfig.current = null;
+    render(<KudosEditor />);
+    expect(placeholderConfig.current).toBeTruthy();
+    expect(placeholderConfig.current?.placeholder).toBe(
+      "kudos.dialog.content_placeholder",
+    );
   });
 
   it("calls editor.setEditable(false) when disabled=true", () => {
