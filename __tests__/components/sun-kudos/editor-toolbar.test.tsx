@@ -121,6 +121,18 @@ describe("EditorToolbar", () => {
     expect(editor._calls).not.toContain("unsetLink");
   });
 
+  it("renders the segmented bordered button group per design", () => {
+    render(<EditorToolbar editor={null} />);
+    // Every control is a bordered cell (#998C5F), not a borderless icon.
+    const bold = screen.getByRole("button", { name: "kudos.editor.bold" });
+    expect(bold.className).toContain("border-[#998C5F]");
+    // The row's top corners are rounded to meet the text field below.
+    expect(bold.className).toContain("rounded-tl-lg");
+    const guidelines = screen.getByText("kudos.editor.community_guidelines");
+    expect(guidelines.className).toContain("rounded-tr-lg");
+    expect(guidelines.className).toContain("border-[#998C5F]");
+  });
+
   it("Bold button shows aria-pressed=true when bold is active", () => {
     const editor = makeEditor({ active: { bold: true } }) as ReturnType<
       typeof makeEditor

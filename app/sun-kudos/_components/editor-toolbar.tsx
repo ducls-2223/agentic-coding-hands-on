@@ -74,39 +74,38 @@ interface EditorToolbarProps {
 
 export function EditorToolbar({ editor }: EditorToolbarProps) {
   const { t } = useTranslation();
+  // Segmented button group per design: each control is a 56×40 bordered cell
+  // (#998C5F), corners of the row rounded to meet the text field below. `-ml-px`
+  // collapses the shared vertical border between adjacent cells.
   return (
-    <div className="flex items-center justify-between border-b border-[#998C5F]/30 px-3 py-2">
-      <div className="flex items-center gap-1">
-        {BUTTONS.map((btn) => {
-          const active = editor ? btn.isActive(editor) : false;
-          return (
-            <button
-              key={btn.labelKey}
-              type="button"
-              aria-label={t(btn.labelKey)}
-              aria-pressed={active}
-              disabled={!editor}
-              onClick={() => editor && btn.run(editor)}
-              className={`flex h-8 w-8 items-center justify-center rounded transition-colors disabled:opacity-50 ${
-                active
-                  ? "bg-[#FFEA9E]/60 text-[#00101A]"
-                  : "text-[#998C5F] hover:bg-[#FFEA9E]/40"
-              }`}
-            >
-              <Image
-                src={btn.src}
-                alt=""
-                width={16}
-                height={16}
-                aria-hidden="true"
-              />
-            </button>
-          );
-        })}
-      </div>
+    <div className="flex items-stretch">
+      {BUTTONS.map((btn, i) => {
+        const active = editor ? btn.isActive(editor) : false;
+        return (
+          <button
+            key={btn.labelKey}
+            type="button"
+            aria-label={t(btn.labelKey)}
+            aria-pressed={active}
+            disabled={!editor}
+            onClick={() => editor && btn.run(editor)}
+            className={`flex h-10 w-14 shrink-0 items-center justify-center border border-[#998C5F] transition-colors disabled:opacity-50 ${
+              i === 0 ? "rounded-tl-lg" : "-ml-px"
+            } ${active ? "bg-[#FFEA9E]/60" : "hover:bg-[#FFEA9E]/40"}`}
+          >
+            <Image
+              src={btn.src}
+              alt=""
+              width={20}
+              height={20}
+              aria-hidden="true"
+            />
+          </button>
+        );
+      })}
       <button
         type="button"
-        className="font-montserrat text-sm font-bold text-[#B72927] underline-offset-2 hover:underline"
+        className="-ml-px flex h-10 flex-1 items-center justify-end rounded-tr-lg border border-[#998C5F] px-4 font-montserrat text-sm font-bold text-[#B72927] underline-offset-2 hover:underline"
       >
         {t("kudos.editor.community_guidelines")}
       </button>

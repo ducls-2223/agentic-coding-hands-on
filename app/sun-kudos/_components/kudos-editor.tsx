@@ -4,6 +4,7 @@ import { EditorContent, ReactRenderer, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Mention from "@tiptap/extension-mention";
+import Placeholder from "@tiptap/extension-placeholder";
 import tippy, { type Instance as TippyInstance } from "tippy.js";
 import { useEffect, useImperativeHandle, forwardRef } from "react";
 
@@ -102,13 +103,15 @@ export const KudosEditor = forwardRef<KudosEditorHandle, KudosEditorProps>(
             },
           },
         }),
+        Placeholder.configure({
+          placeholder: t("kudos.dialog.content_placeholder"),
+        }),
       ],
       content: "",
       editorProps: {
         attributes: {
           class:
-            "prose prose-sm max-w-none font-montserrat min-h-[180px] w-full bg-transparent px-4 py-3 text-base text-[#00101A] focus:outline-none",
-          "data-placeholder": t("kudos.dialog.content_placeholder"),
+            "kudos-prose font-montserrat min-h-[200px] w-full bg-transparent px-6 py-3 text-base text-[#00101A] focus:outline-none",
         },
       },
       immediatelyRender: false,
@@ -133,13 +136,18 @@ export const KudosEditor = forwardRef<KudosEditorHandle, KudosEditorProps>(
     );
 
     return (
-      <div
-        className={`overflow-hidden rounded-lg border bg-white ${
-          hasError ? "border-[#B72927]" : "border-[#998C5F]"
-        }`}
-      >
+      // Per design the toolbar and text field are separate bordered regions:
+      // the toolbar cells round the top corners, the text field rounds the
+      // bottom. `-mt-px` collapses the shared border between them into one line.
+      <div className="flex flex-col">
         <EditorToolbar editor={editor} />
-        <EditorContent editor={editor} />
+        <div
+          className={`-mt-px rounded-b-lg border bg-white ${
+            hasError ? "border-[#B72927]" : "border-[#998C5F]"
+          }`}
+        >
+          <EditorContent editor={editor} />
+        </div>
       </div>
     );
   },
