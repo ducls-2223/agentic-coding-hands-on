@@ -5,9 +5,11 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/app/_components/use-translation";
 
 import type { CreateKudosResult } from "../_actions/create-kudos";
-import { EditorToolbar } from "./editor-toolbar";
 import { HashtagChips } from "./hashtag-chips";
+import { ImageUploader } from "./image-uploader";
+import { KudosEditor, type KudosEditorHandle } from "./kudos-editor";
 import { RecipientAutocomplete } from "./recipient-autocomplete";
+import type { Sunner } from "../_lib/fetch-sunners";
 
 interface KudosWriteDialogProps {
   /** Server action that persists a kudos. Bound by the parent. */
@@ -19,35 +21,46 @@ interface KudosWriteDialogProps {
   onSuccess: () => void;
   /** Called when the user closes the dialog without submitting. */
   onClose: () => void;
+  /** Optional pre-fetched sunners to seed the autocomplete. */
+  initialSunners?: Sunner[];
 }
 
 export function KudosWriteDialog({
   action,
   onSuccess,
   onClose,
+  initialSunners,
 }: KudosWriteDialogProps) {
   const { t } = useTranslation();
-  // Submitted to the server action.
-  const [content, setContent] = useState("");
 
-  // Visual-only fields — captured locally, not sent to the action.
-  const [recipient, setRecipient] = useState("");
+  // Form state.
+  const [recipientId, setRecipientId] = useState("");
   const [honorTitle, setHonorTitle] = useState("");
   const [hashtags, setHashtags] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>([]);
   const [anonymous, setAnonymous] = useState(false);
+  const [anonymousName, setAnonymousName] = useState("");
+  const [contentLen, setContentLen] = useState(0);
 
+  const editorRef = useRef<KudosEditorHandle>(null);
   const [state, formAction, pending] = useActionState(action, null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  // Guard so an unstable `onSuccess` reference from the parent can't trigger
-  // a second bubble on a benign re-render after submit.
   const successFiredRef = useRef(false);
 
-  // Focus textarea once on mount.
-  useEffect(() => {
-    textareaRef.current?.focus();
-  }, []);
+  // Wrap the action so we can inject all the captured fields into the
+  // FormData (recipient_id, hashtags JSON, images JSON, etc.).
+  function buildFormData(): FormData {
+    const fd = new FormData();
+    fd.set("content", editorRef.current?.getHtml() ?? "");
+    fd.set("recipient_id", recipientId);
+    fd.set("honor_title", honorTitle);
+    fd.set("is_anonymous", String(anonymous));
+    if (anonymous) fd.set("anonymous_name", anonymousName);
+    fd.set("hashtags", JSON.stringify(hashtags));
+    fd.set("images", JSON.stringify(images));
+    return fd;
+  }
 
-  // Escape closes (only when not pending so submit can't be aborted mid-flight).
+  // Escape closes (only when idle).
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape" && !pending) onClose();
@@ -56,7 +69,7 @@ export function KudosWriteDialog({
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose, pending]);
 
-  // Bubble success up to parent (which closes + toasts). Fires once per mount.
+  // Bubble success up to parent. Fires once per mount.
   useEffect(() => {
     if (state?.ok && !successFiredRef.current) {
       successFiredRef.current = true;
@@ -64,8 +77,15 @@ export function KudosWriteDialog({
     }
   }, [state, onSuccess]);
 
-  const trimmed = content.trim();
-  const disabled = pending || trimmed.length === 0;
+  // Submit button disabled until all required fields populated.
+  const submitDisabled =
+    pending ||
+    contentLen === 0 ||
+    recipientId === "" ||
+    hashtags.length === 0 ||
+    (anonymous && anonymousName.trim().length === 0);
+
+  const fieldErrors = state && !state.ok ? state.fieldErrors ?? {} : {};
 
   return (
     <div
@@ -81,7 +101,7 @@ export function KudosWriteDialog({
       />
 
       <form
-        action={formAction}
+        action={() => formAction(buildFormData())}
         className="font-montserrat relative z-10 flex max-h-[92vh] w-full max-w-[720px] flex-col overflow-hidden rounded-2xl bg-[#FFF8E1] shadow-2xl"
       >
         <div className="flex-1 overflow-y-auto px-10 pt-10">
@@ -98,22 +118,30 @@ export function KudosWriteDialog({
               {t("kudos.dialog.recipient_label")}
               <span className="ml-0.5 text-[#B72927]">{t("common.required")}</span>
             </label>
-            <RecipientAutocomplete
-              inputId="kudos-recipient"
-              value={recipient}
-              onChange={setRecipient}
-              disabled={pending}
-            />
+            <div>
+              <RecipientAutocomplete
+                inputId="kudos-recipient"
+                value={recipientId}
+                onChange={(id) => setRecipientId(id)}
+                initialOptions={initialSunners}
+                disabled={pending}
+                hasError={!!fieldErrors.recipient_id}
+              />
+              {fieldErrors.recipient_id && (
+                <p role="alert" className="mt-1 text-xs font-medium text-[#B72927]">
+                  {fieldErrors.recipient_id}
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* Danh hiệu */}
+          {/* Danh hiệu (optional) */}
           <div className="mb-6 grid grid-cols-[140px_1fr] items-start gap-x-6 gap-y-2">
             <label
               htmlFor="kudos-honor-title"
               className="pt-3 text-base font-bold text-[#00101A]"
             >
               {t("kudos.dialog.honor_label")}
-              <span className="ml-0.5 text-[#B72927]">{t("common.required")}</span>
             </label>
             <div>
               <input
@@ -133,31 +161,23 @@ export function KudosWriteDialog({
             </div>
           </div>
 
-          {/* Editor (toolbar + textarea) */}
-          <div className="mb-2 overflow-hidden rounded-lg border border-[#998C5F] bg-white">
-            <EditorToolbar />
-            <textarea
-              ref={textareaRef}
-              name="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
+          {/* Editor (Tiptap) */}
+          <div className="mb-2">
+            <KudosEditor
+              ref={editorRef}
               disabled={pending}
-              placeholder={t("kudos.dialog.content_placeholder")}
-              className="block h-[180px] w-full resize-none bg-transparent px-4 py-3 text-base text-[#00101A] placeholder:text-[#998C5F] focus:outline-none disabled:opacity-60"
+              hasError={!!fieldErrors.content}
+              onChange={setContentLen}
             />
+            {fieldErrors.content && (
+              <p role="alert" className="mt-1 text-xs font-medium text-[#B72927]">
+                {fieldErrors.content}
+              </p>
+            )}
           </div>
           <p className="mb-6 text-center text-sm font-bold text-[#00101A]">
             {t("kudos.dialog.mention_hint")}
           </p>
-
-          {state && !state.ok && state.error && (
-            <p
-              role="alert"
-              className="mb-4 text-sm font-medium text-[#B72927]"
-            >
-              {state.error}
-            </p>
-          )}
 
           {/* Hashtag */}
           <div className="mb-6 grid grid-cols-[140px_1fr] items-start gap-x-6 gap-y-2">
@@ -165,39 +185,36 @@ export function KudosWriteDialog({
               {t("kudos.dialog.hashtag_label")}
               <span className="ml-0.5 text-[#B72927]">{t("common.required")}</span>
             </label>
-            <HashtagChips
-              tags={hashtags}
-              onChange={setHashtags}
-              disabled={pending}
-            />
+            <div>
+              <HashtagChips
+                tags={hashtags}
+                onChange={setHashtags}
+                disabled={pending}
+              />
+              {fieldErrors.hashtags && (
+                <p role="alert" className="mt-1 text-xs font-medium text-[#B72927]">
+                  {fieldErrors.hashtags}
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* Image (disabled placeholder) */}
+          {/* Image upload */}
           <div className="mb-6 grid grid-cols-[140px_1fr] items-start gap-x-6 gap-y-2">
             <label className="pt-2 text-base font-bold text-[#00101A]">
               {t("kudos.dialog.image_label")}
             </label>
-            <button
-              type="button"
-              disabled
-              title={t("kudos.dialog.image_coming_soon")}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#998C5F] bg-white px-3 py-1.5 text-sm font-bold text-[#00101A] opacity-50"
-            >
-              <Image
-                src="/kudos/editor/plus.svg"
-                alt=""
-                width={12}
-                height={12}
-                aria-hidden="true"
-              />
-              <span>{t("kudos.dialog.image_button")}</span>
-              <span className="text-xs font-medium text-[#998C5F]">
-                {t("common.max")} 5
-              </span>
-            </button>
+            <div>
+              <ImageUploader value={images} onChange={setImages} disabled={pending} />
+              {fieldErrors.images && (
+                <p role="alert" className="mt-1 text-xs font-medium text-[#B72927]">
+                  {fieldErrors.images}
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* Anonymous toggle */}
+          {/* Anonymous toggle + name */}
           <label className="mb-2 flex items-center gap-3">
             <input
               type="checkbox"
@@ -210,6 +227,35 @@ export function KudosWriteDialog({
               {t("kudos.dialog.anonymous")}
             </span>
           </label>
+          {anonymous && (
+            <div className="mb-4">
+              <input
+                type="text"
+                value={anonymousName}
+                onChange={(e) => setAnonymousName(e.target.value)}
+                disabled={pending}
+                placeholder={t("kudos.dialog.anonymous_name_placeholder")}
+                aria-invalid={!!fieldErrors.anonymous_name || undefined}
+                className={`h-12 w-full rounded-lg border bg-white px-4 text-sm text-[#00101A] placeholder:text-[#998C5F] focus:border-[#00101A] focus:outline-none disabled:opacity-60 ${
+                  fieldErrors.anonymous_name ? "border-[#B72927]" : "border-[#998C5F]"
+                }`}
+              />
+              {fieldErrors.anonymous_name && (
+                <p role="alert" className="mt-1 text-xs font-medium text-[#B72927]">
+                  {fieldErrors.anonymous_name}
+                </p>
+              )}
+            </div>
+          )}
+
+          {state && !state.ok && state.error && !state.fieldErrors && (
+            <p
+              role="alert"
+              className="mb-4 text-sm font-medium text-[#B72927]"
+            >
+              {state.error}
+            </p>
+          )}
         </div>
 
         {/* Footer */}
@@ -232,7 +278,7 @@ export function KudosWriteDialog({
           </button>
           <button
             type="submit"
-            disabled={disabled}
+            disabled={submitDisabled}
             className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#FFEA9E] px-6 py-3 text-sm font-bold text-[#00101A] transition-opacity hover:brightness-95 disabled:opacity-40"
           >
             {pending ? (

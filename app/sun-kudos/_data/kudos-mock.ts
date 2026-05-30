@@ -14,6 +14,9 @@ export interface KudosItem {
   message: string;
   hashtags: string[];
   likes: number;
+  /** Whether the *current viewer* has liked this kudos. Optional so legacy
+   *  mock rows compile unchanged; falsy on unauthenticated viewers. */
+  likedByMe?: boolean;
   timestamp: string;
   images?: string[];
 }

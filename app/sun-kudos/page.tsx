@@ -22,12 +22,12 @@ export default async function SunKudosPage() {
     getLanguage(),
     createSupabaseServerClient(),
   ]);
-  const [
-    {
-      data: { user },
-    },
-    allKudos,
-  ] = await Promise.all([supabase.auth.getUser(), fetchAllKudos(lang)]);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  // Pass the user id into fetchAllKudos so it can mark `likedByMe` without a
+  // second supabase.auth.getUser() round-trip.
+  const allKudos = await fetchAllKudos(lang, user?.id ?? null);
 
   return (
     <div className="min-h-screen w-full bg-[#0A0E1B] flex flex-col">

@@ -10,8 +10,16 @@ const query = {
   limit: vi.fn(),
 };
 
+// Likes lookup chain: select(...).eq(...).in(...) → resolved value.
+const likesIn = vi.fn();
+const likesEq = vi.fn(() => ({ in: likesIn }));
+const likesSelect = vi.fn(() => ({ eq: likesEq }));
+
 const supabase: SupabaseLike = {
-  from: vi.fn(() => query),
+  from: vi.fn((table: string) => {
+    if (table === "kudos_likes") return { select: likesSelect };
+    return query;
+  }),
 };
 
 vi.mock("@/lib/supabase/server", () => ({
@@ -29,7 +37,13 @@ const ROW = {
   author_level: "Hero",
   author_badge: "/b.png",
   images: null,
-  kudos_recipients: { name: "Bob", level: "Hero", badge: "/b.png", avatar: "/b2.png", department: "ENG" },
+  kudos_recipients: {
+    name: "Bob",
+    level: "Hero",
+    badge: "/b.png",
+    avatar: "/b2.png",
+    department: "ENG",
+  },
   kudos_hashtags: [{ hashtag: "shipit" }],
 };
 
@@ -38,7 +52,14 @@ describe("fetchAllKudos", () => {
     query.select.mockReset().mockImplementation(() => query);
     query.order.mockReset().mockImplementation(() => query);
     query.limit.mockReset();
-    supabase.from.mockReset().mockImplementation(() => query);
+
+    supabase.from.mockReset().mockImplementation((table: string) => {
+      if (table === "kudos_likes") return { select: likesSelect };
+      return query;
+    });
+    likesIn.mockReset();
+    likesEq.mockClear().mockImplementation(() => ({ in: likesIn }));
+    likesSelect.mockClear().mockImplementation(() => ({ eq: likesEq }));
   });
 
   it("maps Supabase rows into KudosItem shape", async () => {
@@ -59,7 +80,10 @@ describe("fetchAllKudos", () => {
 
   it("returns an empty array on query error", async () => {
     const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    query.limit.mockResolvedValueOnce({ data: null, error: { code: "E", message: "boom" } });
+    query.limit.mockResolvedValueOnce({
+      data: null,
+      error: { code: "E", message: "boom" },
+    });
 
     const items = await fetchAllKudos("en");
 
@@ -123,7 +147,13 @@ describe("fetchAllKudos", () => {
         {
           ...ROW,
           kudos_recipients: [
-            { name: "Carol", level: "Hero", badge: "/b.png", avatar: "/c.png", department: "ENG" },
+            {
+              name: "Carol",
+              level: "Hero",
+              badge: "/b.png",
+              avatar: "/c.png",
+              department: "ENG",
+            },
           ],
         },
       ],
@@ -142,5 +172,44 @@ describe("fetchAllKudos", () => {
 
     const items = await fetchAllKudos("en");
     expect(items).toEqual([]);
+  });
+
+  it("marks likedByMe=true for rows the user has liked", async () => {
+    query.limit.mockResolvedValueOnce({ data: [ROW], error: null });
+    likesIn.mockResolvedValueOnce({
+      data: [{ kudos_id: "k1" }],
+      error: null,
+    });
+
+    const items = await fetchAllKudos("en", "u1");
+    expect(items[0].likedByMe).toBe(true);
+    expect(likesEq).toHaveBeenCalledWith("user_id", "u1");
+    expect(likesIn).toHaveBeenCalledWith("kudos_id", ["k1"]);
+  });
+
+  it("marks likedByMe=false for rows the user has NOT liked", async () => {
+    query.limit.mockResolvedValueOnce({ data: [ROW], error: null });
+    likesIn.mockResolvedValueOnce({ data: [], error: null });
+
+    const items = await fetchAllKudos("en", "u1");
+    expect(items[0].likedByMe).toBe(false);
+  });
+
+  it("falls back to likedByMe=false when the likes lookup errors", async () => {
+    const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    query.limit.mockResolvedValueOnce({ data: [ROW], error: null });
+    likesIn.mockResolvedValueOnce({ data: null, error: { message: "boom" } });
+
+    const items = await fetchAllKudos("en", "u1");
+    expect(items[0].likedByMe).toBe(false);
+    expect(errSpy).toHaveBeenCalled();
+    errSpy.mockRestore();
+  });
+
+  it("skips the likes query when userId is null (unauthenticated)", async () => {
+    query.limit.mockResolvedValueOnce({ data: [ROW], error: null });
+    const items = await fetchAllKudos("en", null);
+    expect(items[0].likedByMe).toBe(false);
+    expect(likesSelect).not.toHaveBeenCalled();
   });
 });

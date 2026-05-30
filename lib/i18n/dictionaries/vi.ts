@@ -101,7 +101,15 @@ export const VI = {
   "kudos.dialog.image_label": "Image",
   "kudos.dialog.image_button": "Image",
   "kudos.dialog.image_coming_soon": "Sắp ra mắt",
+  "kudos.dialog.image_remove": "Xóa ảnh",
+  "kudos.dialog.image_invalid_type": "Chỉ chấp nhận ảnh JPG hoặc PNG.",
+  "kudos.dialog.image_too_large": "Ảnh vượt quá 5MB.",
+  "kudos.dialog.image_upload_failed": "Không thể tải ảnh. Vui lòng thử lại.",
   "kudos.dialog.anonymous": "Gửi lời cám ơn và ghi nhận ẩn danh",
+  "kudos.dialog.anonymous_name_placeholder": "Tên ẩn danh",
+  "kudos.dialog.error_recipient_required": "Vui lòng chọn người nhận.",
+  "kudos.dialog.error_hashtag_required": "Không được để trống.",
+  "kudos.dialog.error_content_required": "Không được để trống.",
   "kudos.dialog.error_session": "Phiên đăng nhập có vấn đề. Vui lòng tải lại trang.",
   "kudos.dialog.error_login": "Bạn cần đăng nhập để gửi Kudos.",
   "kudos.dialog.error_save": "Không thể lưu Kudos. Vui lòng thử lại.",
@@ -153,6 +161,7 @@ export const VI = {
   "sun_kudos.card.next": "Trang tiếp",
   "sun_kudos.card.like": "Thả tim",
   "sun_kudos.card.unlike": "Bỏ tim",
+  "sun_kudos.card.like_failed": "Không thể cập nhật lượt thích. Vui lòng thử lại.",
   "sun_kudos.card.copy_link": "Sao chép liên kết",
 
   // Home page

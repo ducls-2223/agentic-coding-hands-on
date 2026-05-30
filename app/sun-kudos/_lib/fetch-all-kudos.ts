@@ -25,6 +25,7 @@ interface KudosRow {
   author_level: string | null;
   author_badge: string | null;
   images: string[] | null;
+  likes_count: number | null;
   kudos_recipients: KudosRecipientRow | KudosRecipientRow[] | null;
   kudos_hashtags: KudosHashtagRow[] | null;
 }
@@ -38,12 +39,15 @@ function firstRecipient(
   return Array.isArray(recipients) ? (recipients[0] ?? null) : recipients;
 }
 
-export async function fetchAllKudos(lang: Language): Promise<KudosItem[]> {
+export async function fetchAllKudos(
+  lang: Language,
+  userId?: string | null,
+): Promise<KudosItem[]> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("kudos")
     .select(
-      "id, content, created_at, author_name, author_avatar, author_level, author_badge, images, kudos_recipients!inner(name, level, badge, avatar, department), kudos_hashtags(hashtag)",
+      "id, content, created_at, author_name, author_avatar, author_level, author_badge, images, likes_count, kudos_recipients!inner(name, level, badge, avatar, department), kudos_hashtags(hashtag)",
     )
     .order("created_at", { ascending: false })
     .limit(50);
@@ -54,6 +58,25 @@ export async function fetchAllKudos(lang: Language): Promise<KudosItem[]> {
   }
 
   const rows = (data ?? []) as unknown as KudosRow[];
+  const ids = rows.map((r) => r.id);
+
+  // Mark which of the fetched kudos the current user has liked. Caller passes
+  // userId so we don't duplicate the supabase.auth.getUser() round-trip that
+  // page.tsx already makes. Unauthenticated viewers (userId null/undefined)
+  // see every card as unliked.
+  let likedSet: Set<string> = new Set();
+  if (ids.length > 0 && userId) {
+    const { data: likedRows, error: likedError } = await supabase
+      .from("kudos_likes")
+      .select("kudos_id")
+      .eq("user_id", userId)
+      .in("kudos_id", ids);
+    if (likedError) {
+      console.error("[fetchAllKudos] likes lookup failed:", likedError.message);
+    } else {
+      likedSet = new Set((likedRows ?? []).map((r) => r.kudos_id));
+    }
+  }
 
   return rows
     .map((row): KudosItem | null => {
@@ -77,7 +100,8 @@ export async function fetchAllKudos(lang: Language): Promise<KudosItem[]> {
         },
         message: row.content,
         hashtags: (row.kudos_hashtags ?? []).map((h) => h.hashtag),
-        likes: 0,
+        likes: row.likes_count ?? 0,
+        likedByMe: likedSet.has(row.id),
         timestamp: formatRelativeTime(row.created_at, lang),
         images: row.images ?? undefined,
       };
